@@ -1,102 +1,140 @@
 #include "Buzzer.h"
+#include "Song.h"
 #include "Arduino.h"
-#include "settings.h"
 
-// Note durations in ms:
-const float DURATION_FULL = (static_cast<float>(60) / SONG_BPM) * 3 * 1000;
-const float DURATION_HALF = DURATION_FULL/2;
-const float DURATION_QUARTER = DURATION_FULL/4;
-const float DURATION_EIGHTH = DURATION_FULL/8;
 
-// Note tones:
-// (source: https://pages.mtu.edu/~suits/notefreqs.html)
-const unsigned short TONE_A3 = 220;
-const unsigned short TONE_B3 = 247;
-const unsigned short TONE_G3 = 196;
-const unsigned short TONE_C4 = 262;
-const unsigned short TONE_D4 = 294;
-const unsigned short TONE_E4 = 330;
-const unsigned short TONE_F4 = 349;
-const unsigned short TONE_G4 = 392;
-
-class Note {
-public:
-    unsigned short tone;
-    float duration;
-
-    Note(unsigned short tone, float duration);
-};
-
-Note::Note(unsigned short tone, float duration) {
-    this->duration = duration;
-    this->tone = tone;
-}
-
-// https://musescore.com/user/173585/scores/166951
-const Note SONG[] = {
-        // Bar 1:
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_A3, DURATION_QUARTER),
-        Note(TONE_G3, DURATION_QUARTER),
-
-        // Bar 2:
-        Note(TONE_C4, DURATION_QUARTER),
-        Note(TONE_B3, DURATION_FULL),
-
-        // Bar 3:
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_A3, DURATION_QUARTER),
-        Note(TONE_G3, DURATION_QUARTER),
-
-        // Bar 4:
-        Note(TONE_D4, DURATION_QUARTER),
-        Note(TONE_C4, DURATION_FULL),
-
-        // Bar 5:
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_G3, DURATION_EIGHTH),
-        Note(TONE_G4, DURATION_QUARTER),
-        Note(TONE_E4, DURATION_QUARTER),
-
-        // Bar 6:
-        Note(TONE_C4, DURATION_QUARTER),
-        Note(TONE_B3, DURATION_QUARTER),
-        Note(TONE_A3, DURATION_QUARTER),
-
-        // Bar 7:
-        Note(TONE_F4, DURATION_EIGHTH),
-        Note(TONE_F4, DURATION_EIGHTH),
-        Note(TONE_E4, DURATION_QUARTER),
-        Note(TONE_C4, DURATION_QUARTER),
-
-        // Bar 8:
-        Note(TONE_D4, DURATION_QUARTER),
-        Note(TONE_C4, DURATION_HALF),
-};
-
-Buzzer::Buzzer(unsigned short pin) {
+Buzzer::Buzzer(unsigned short pin, Song song) : song(song) {
     this->pin = pin;
+    this->song = song;
 }
 
 void Buzzer::init() {
     pinMode(pin, OUTPUT);
 }
 
-void Buzzer::draw_attention() {
-    for (int i = 0; i < 3; i++) {
-        tone(this->pin, 3000);
-        delay(500);
+void Buzzer::start_ticking(int interval, int duration, int tone) {
+    this->tick_interval = interval;
+    this->tick_duration = duration;
+    this->tick_tone = tone;
+
+    this->tick_play_next = true;
+    this->state = BUZZER_STATE_TICKING;
+}
+
+void Buzzer::start_song() {
+    this->state = BUZZER_STATE_SONG;
+    this->song_play_next = true;
+}
+
+void Buzzer::handle_ticking() {
+    const unsigned long now = millis();
+
+    if (!this->playing) {
+        if (now >= this->tick_start_ts) {
+            this->tick_start_ts = now;
+            tone(this->pin, this->tick_tone);
+            this->playing = true;
+            this->tick_streak++;
+        }
+        return;
+    }
+
+    if (now >= this->tick_start_ts + this->tick_duration) {
         noTone(this->pin);
+        this->playing = false;
+        if (this->tick_play_next) {
+            this->tick_start_ts = now + this->tick_interval;
+        }
     }
 }
 
-void Buzzer::play_happy_birthday_song() {
-    for (auto note : SONG) {
-        tone(this->pin, note.tone);
-        delay(static_cast<unsigned long>(note.duration));
-        noTone(this->pin);
-//        delay(10);
+void Buzzer::handle_song() {
+    const unsigned long now = millis();
+    const Note current_note = this->song.notes[this->song_note_index];
+
+    if (!this->playing) {
+        if (now >= this->song_note_start_ts) {
+            this->song_note_start_ts = now;
+            this->playing = true;
+            tone(this->pin, current_note.tone);
+        }
     }
+
+    // Get appropriate note duration in ms:
+    unsigned int current_note_duration_ms;
+    switch (current_note.duration) {
+        case NOTE_DURATION_HALF:
+            current_note_duration_ms = this->song.half_duration;
+            break;
+
+        case NOTE_DURATION_QUARTER:
+            current_note_duration_ms = this->song.quarter_duration;
+            break;
+
+        case NOTE_DURATION_EIGHTH:
+            current_note_duration_ms = this->song.eighth_duration;
+            break;
+    }
+
+    // If it is time to play next note:
+    if (now >= this->song_note_start_ts + current_note_duration_ms) {
+        this->song_note_index++;
+        this->playing = false;
+        noTone(this->pin);
+
+        // If the last note has been played already:
+        if (this->song_note_index > this->song.notes_count - 1) {
+            if (this->song_play_next) {
+                this->song_note_index = 0;
+            } else {
+                this->abort_song();
+            }
+        }
+        this->song_note_start_ts = now + this->song.note_gap;
+    }
+}
+
+
+void Buzzer::handle() {
+    switch (this->state) {
+        case BUZZER_STATE_STANDBY:
+            return;
+
+        case BUZZER_STATE_SONG:
+            this->handle_song();
+            break;
+
+        case BUZZER_STATE_TICKING:
+            this->handle_ticking();
+            break;
+    }
+}
+
+void Buzzer::abort_ticking() {
+    this->state = BUZZER_STATE_STANDBY;
+    this->playing = false;
+
+    this->tick_streak = 0;
+    this->tick_interval = 0;
+    this->tick_duration = 0;
+    this->tick_tone = 0;
+
+    this->tick_start_ts = 0;
+
+}
+
+void Buzzer::abort_song() {
+    this->state = BUZZER_STATE_STANDBY;
+    this->playing = false;
+
+    this->song_note_index = 0;
+    this->song_note_start_ts = 0;
+}
+
+void Buzzer::finish_ticking() {
+    this->abort_ticking();
+}
+
+void Buzzer::finish_song() {
+    this->song_play_next = false;
 }
