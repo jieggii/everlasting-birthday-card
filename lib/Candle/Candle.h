@@ -1,7 +1,3 @@
-//
-// Created by jieggii on 12/15/23.
-//
-
 #ifndef EVERLASTING_BIRTHDAY_CARD_CANDLE_H
 #define EVERLASTING_BIRTHDAY_CARD_CANDLE_H
 

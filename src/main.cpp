@@ -1,7 +1,5 @@
 #include <Arduino.h>
 
-#include <LiquidCrystal_I2C.h>
-
 #include "pinout.h"
 #include "settings.h"
 #include "../lib/Buzzer/Buzzer.h"
@@ -33,10 +31,7 @@ unsigned long START_COUNTDOWN_TS = 0;
 
 // Define hardware:
 Display LCD(0x27,  16, 2);
-Microphone MICROPHONE(
-        MICROPHONE_PIN,
-        MICROPHONE_TRIGGER_TRESHOLD,
-        MICROPHONE_TRIGGER_STREAK);
+Microphone MICROPHONE(MICROPHONE_PIN,MICROPHONE_TRIGGER_TRESHOLD,MICROPHONE_TRIGGER_STREAK);
 Buzzer BUZZER(BUZZER_PIN, SONG);
 Candle CANDLE(CANDLE_PIN);
 

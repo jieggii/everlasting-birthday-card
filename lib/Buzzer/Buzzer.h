@@ -3,16 +3,6 @@
 
 #include "../Song/Song.h"
 
-enum SongState {
-    SONG_STATE_START,
-    SONG_STATE_NOTE_PLAYING,
-    SONG_STATE_NOTE_GAP,
-};
-
-//enum TickState {
-//    TICK_STATE_PLAYING,
-//    TICK_STATE_NOT_PLAYING,
-//};
 
 enum BuzzerState {
     // The default mode, nothing is being played.
