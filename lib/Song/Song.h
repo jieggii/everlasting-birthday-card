@@ -1,7 +1,7 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_SONG_H
 #define EVERLASTING_BIRTHDAY_CARD_SONG_H
 
-#include "Note.h"
+#include "../Note/Note.h"
 
 class Song {
 public:

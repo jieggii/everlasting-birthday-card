@@ -1,7 +1,7 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_SETTINGS_H
 
-#include "drivers/Song.h"
-#include "drivers/Note.h"
+#include "../lib/Song/Song.h"
+#include "../lib/Note/Note.h"
 
 // Song settings:
 // BPM of the song.

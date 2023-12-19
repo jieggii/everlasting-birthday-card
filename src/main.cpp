@@ -4,10 +4,10 @@
 
 #include "pinout.h"
 #include "settings.h"
-#include "drivers/Buzzer.h"
-#include "drivers/Microphone.h"
-#include "drivers/Candle.h"
-#include "drivers/Display.h"
+#include "../lib/Buzzer/Buzzer.h"
+#include "../lib/Microphone/Microphone.h"
+#include "../lib/Candle/Candle.h"
+#include "../lib/Display/Display.h"
 
 // All states of the Arduino.
 enum CardState {

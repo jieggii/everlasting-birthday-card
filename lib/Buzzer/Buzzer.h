@@ -1,7 +1,7 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_BUZZER_H
 #define EVERLASTING_BIRTHDAY_CARD_BUZZER_H
 
-#include "Song.h"
+#include "../Song/Song.h"
 
 enum SongState {
     SONG_STATE_START,
