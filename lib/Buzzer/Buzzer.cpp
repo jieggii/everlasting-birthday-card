@@ -7,7 +7,7 @@ Buzzer::Buzzer(unsigned short pin, Song song) : song(song) {
     this->song = song;
 }
 
-void Buzzer::init() {
+void Buzzer::init() const {
     pinMode(pin, OUTPUT);
 }
 
@@ -21,8 +21,8 @@ void Buzzer::start_ticking(int interval, int duration, int tone) {
 }
 
 void Buzzer::start_song() {
-    this->state = BUZZER_STATE_SONG;
     this->song_play_next = true;
+    this->state = BUZZER_STATE_SONG;
 }
 
 void Buzzer::handle_ticking() {
@@ -41,7 +41,7 @@ void Buzzer::handle_ticking() {
     if (now >= this->tick_start_ts + this->tick_duration) {
         noTone(this->pin);
         this->playing = false;
-        if (this->tick_play_next) {
+        if (this->tick_play_next) { // todo: check if this logic needed
             this->tick_start_ts = now + this->tick_interval;
         }
     }
@@ -119,7 +119,6 @@ void Buzzer::abort_ticking() {
     this->tick_tone = 0;
 
     this->tick_start_ts = 0;
-
 }
 
 void Buzzer::abort_song() {

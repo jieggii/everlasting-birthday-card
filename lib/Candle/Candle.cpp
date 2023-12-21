@@ -6,11 +6,11 @@ Candle::Candle(unsigned short pin) {
     this->pin = pin;
 }
 
-void Candle::init() {
+void Candle::init() const {
     pinMode(this->pin, OUTPUT);
 }
 
-void Candle::set_state(bool state) {
+void Candle::set_state(bool state) const {
     if (state) {
         digitalWrite(this->pin, HIGH);
     } else {

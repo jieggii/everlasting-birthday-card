@@ -7,8 +7,10 @@ public:
     unsigned short pin;
 
     explicit Candle(unsigned short pin);
-    void init();
-    void set_state(bool state);
+
+    void init() const;
+
+    void set_state(bool state) const;
 };
 
 

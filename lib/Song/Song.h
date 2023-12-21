@@ -5,9 +5,6 @@
 
 class Song {
 public:
-    // Song BPM.
-    unsigned short bpm;
-
     // Array of song notes.
     Note *notes;
 
@@ -26,7 +23,18 @@ public:
     // Duration of an eighth note in ms.
     unsigned int eighth_duration;
 
-    Song(unsigned short bpm, Note notes[], unsigned short notes_count, unsigned short note_gap);
+    Song(unsigned short bpm, Note notes[], unsigned short notes_count, unsigned short note_gap) {
+        this->notes = notes;
+        this->notes_count = notes_count;
+        this->note_gap = note_gap;
+
+        // Precalculate durations for different notes:
+        float full_duration = (static_cast<float>(60) / bpm) * 3 * 1000;  // duration of a full note
+
+        this->half_duration = static_cast<unsigned int>(full_duration / 2);    // duration of a half note
+        this->quarter_duration = static_cast<unsigned int>(full_duration / 4); // duration of a quarter note
+        this->eighth_duration = static_cast<unsigned int>(full_duration / 8);  // duration of an eighth note
+    };
 };
 
 

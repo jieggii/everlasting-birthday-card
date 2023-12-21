@@ -4,18 +4,17 @@
 
 class Microphone {
 public:
-    explicit Microphone(unsigned short pin, unsigned short trigger_treshold, unsigned short target_trigger_streak);
-    void init();
-    bool check_trigger();
+    explicit Microphone(unsigned short pin);
+
+    void init() const;
+
+    bool is_triggered(unsigned short treshold, unsigned short target);
 
 private:
     unsigned short pin;
-    unsigned int target_trigger_streak;
-    unsigned int trigger_treshold;
+    unsigned short trigger_streak = 0;
 
-    unsigned trigger_streak = 0;
-
-    int read();
+    int read() const;
 };
 
 

@@ -2,30 +2,28 @@
 #include "Arduino.h"
 
 
-Microphone::Microphone(unsigned short pin, unsigned short trigger_treshold, unsigned short target_trigger_streak) {
+Microphone::Microphone(unsigned short pin) {
     this->pin = pin;
-    this->trigger_treshold = trigger_treshold;
-    this->target_trigger_streak = target_trigger_streak;
 };
 
-void Microphone::init() {
+void Microphone::init() const {
     pinMode(this->pin, INPUT);
 }
 
-int Microphone::read() {
+int Microphone::read() const {
     return analogRead(this->pin);
 }
 
-bool Microphone::check_trigger() {
+bool Microphone::is_triggered(unsigned short treshold, unsigned short streak) {
     int reading = this->read();
-    if (reading == this->trigger_treshold) {
+    if (reading == treshold) {
         this->trigger_streak += 1;
-        if (this->trigger_streak == this->target_trigger_streak) {
+        if (this->trigger_streak == streak) {
+            this->trigger_streak = 0;
             return true;
         } else {
             return false;
         }
-
     } else {
         this->trigger_streak = 0;
         return false;

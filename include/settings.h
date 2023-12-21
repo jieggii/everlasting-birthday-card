@@ -62,24 +62,37 @@ Song SONG = Song(SONG_BPM, SONG_NOTES, SONG_NOTES_COUNT, SONG_NOTE_GAP);
 
 // Microphone settings:
 // Microphone trigger treshold from 0 to 1023.
-const short MICROPHONE_TRIGGER_TRESHOLD = 1023;
+const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 1023;
 
 // Required streak of treshold readings to trigger.
-const short MICROPHONE_TRIGGER_STREAK = 1;
+const unsigned short MICROPHONE_TRIGGER_STREAK = 1;
 
 
-// Countdown settings:
+// Celebrate countdown settings:
 // Countdown ticks count:
-const short COUNTDOWN_TICK_COUNT = 2;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_COUNT = 5;
 
 // Tone of the countdown tick.
-const short COUNTDOWN_TICK_TONE = 196 * 2;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_TONE = 196 * 2;
 
 // Duration of a countdown tick.
-const short COUNTDOWN_TICK_DURATION = 100;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_DURATION = 100;
 
 // Time interval between countdown ticks (ms)
-const short COUNTDOWN_TICK_INTERVAL = 400;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_INTERVAL = 400;
+
+
+// Sleep countdown settings:
+const unsigned short SLEEP_COUNTDOWN_TICK_COUNT = 5;
+
+// Tone of the countdown tick.
+const unsigned short SLEEP_COUNTDOWN_TICK_TONE = 196 * 2;
+
+// Duration of a countdown tick.
+const unsigned short SLEEP_COUNTDOWN_TICK_DURATION = 100;
+
+// Time interval between countdown ticks (ms)
+const unsigned short SLEEP_COUNTDOWN_TICK_INTERVAL = 400;
 
 
 #define EVERLASTING_BIRTHDAY_CARD_SETTINGS_H

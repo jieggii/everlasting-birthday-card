@@ -21,12 +21,12 @@ public:
     // unsigned long song_streak = 0;
 
     // Amount of ticks played in a row.
-    short int tick_streak = 0;
+    unsigned short tick_streak = 0;
 
     Buzzer(unsigned short pin, Song song);
 
     // Initialize buzzer.
-    void init();
+    void init() const;
 
     // Start repeatedly playing song.
     void start_song();
@@ -53,8 +53,6 @@ private:
 
     // Is true when buzzer is producing sound, false when buzzer is silent.
     bool playing = false;
-//    bool tick_playing = false;
-//    bool song_playing = false;
 
     // Buzzer state
     BuzzerState state = BUZZER_STATE_STANDBY;
@@ -62,27 +60,20 @@ private:
 
     // Related to BUZZER_STATE_TICKING state:
 
-    // CardState of the tick.
-//    TickState tick_state = TICK_STATE_GAP;
-    // Is true when tick is playing, false when tick is silent.
-//    bool tick_playing = false;
-
-
     // Interval of tick in BUZZER_STATE_TICKING.
-    unsigned int tick_interval = 0;
+    unsigned short tick_interval = 0;
 
     // Duration of tick in BUZZER_STATE_TICKING.
-    unsigned int tick_duration = 0;
+    unsigned short tick_duration = 0;
 
     // Tone of tick in BUZZER_STATE_TICKING.
-    unsigned int tick_tone = 0;
+    unsigned short tick_tone = 0;
 
     // Timestamp when the current tick started.
     unsigned long tick_start_ts = 0;
 
     // Whether tick will be played next time or not.
     bool tick_play_next = false;
-
 
 
     // Related to BUZZER_STATE_SONG state:
@@ -95,9 +86,6 @@ private:
 
     // Timestamp when the current note started playing.
     unsigned long song_note_start_ts = 0;
-
-    // CardState of the song.
-//    SongState song_state = SONG_STATE_NOTE_GAP;
 
     // Handles song.
     void handle_song();
