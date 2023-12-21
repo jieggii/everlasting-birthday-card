@@ -35,11 +35,7 @@ ArduinoState ARDUINO_STATE = SLEEP;
 
 // Define hardware:
 Display LCD(0x27, 16, 2);
-Microphone MICROPHONE(
-        MICROPHONE_PIN,
-        MICROPHONE_TRIGGER_TRESHOLD,
-        MICROPHONE_TRIGGER_STREAK
-);
+Microphone MICROPHONE(MICROPHONE_PIN);
 Buzzer BUZZER(BUZZER_PIN, SONG);
 Candle CANDLE(CANDLE_PIN);
 
@@ -92,7 +88,7 @@ void setup_celebrate() {
 
 void loop_celebrate() {
     BUZZER.handle();
-    bool candle_blown = MICROPHONE.is_triggered();
+    bool candle_blown = MICROPHONE.is_triggered(MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK);
     if (candle_blown) {
         CANDLE.set_state(false);
         BUZZER.finish_song();
