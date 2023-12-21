@@ -17,8 +17,8 @@ enum BuzzerState {
 
 class Buzzer {
 public:
-    // Songs played in a row counter.
-    // unsigned long song_streak = 0;
+    // Buzzer powered
+    BuzzerState state = BUZZER_STATE_STANDBY;
 
     // Amount of ticks played in a row.
     unsigned short tick_streak = 0;
@@ -54,11 +54,7 @@ private:
     // Is true when buzzer is producing sound, false when buzzer is silent.
     bool playing = false;
 
-    // Buzzer state
-    BuzzerState state = BUZZER_STATE_STANDBY;
-
-
-    // Related to BUZZER_STATE_TICKING state:
+    // Related to BUZZER_STATE_TICKING powered:
 
     // Interval of tick in BUZZER_STATE_TICKING.
     unsigned short tick_interval = 0;
@@ -76,7 +72,7 @@ private:
     bool tick_play_next = false;
 
 
-    // Related to BUZZER_STATE_SONG state:
+    // Related to BUZZER_STATE_SONG powered:
 
     // Whether song be played next time or not.
     bool song_play_next = false;
@@ -96,7 +92,7 @@ private:
     // Handles ticking.
     void handle_ticking();
 
-    // Resets from ticker to the standby state.
+    // Resets from ticker to the standby powered.
     void abort_ticking();
 };
 

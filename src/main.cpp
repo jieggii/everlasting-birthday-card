@@ -32,6 +32,7 @@ enum ArduinoState {
 };
 
 ArduinoState ARDUINO_STATE = SLEEP;
+unsigned long WISH_START_TS = 0;
 
 // Define hardware:
 Display LCD(0x27, 16, 2);
@@ -81,17 +82,27 @@ void setup_celebrate() {
     LCD.print("Blow the candle!");
 
     BUZZER.start_song();
-    CANDLE.set_state(true);
+    CANDLE.set_powered(true);
 
     ARDUINO_STATE = CELEBRATE;
 }
 
 void loop_celebrate() {
-    BUZZER.handle();
-    bool candle_blown = MICROPHONE.is_triggered(MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK);
-    if (candle_blown) {
-        CANDLE.set_state(false);
-        BUZZER.finish_song();
+    BUZZER.handle(); // play the song
+
+    if (CANDLE.powered) { // if candle is not blown yet
+        bool microphone_triggered = MICROPHONE.is_triggered(
+                MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
+        );
+        if (microphone_triggered) {
+            CANDLE.set_powered(false);
+            BUZZER.finish_song();
+        }
+    } else { // If candle is already blown
+        if (BUZZER.state == BUZZER_STATE_STANDBY) { // if song has already stopped playing
+            // Go to the SETUP_WISH state:
+            ARDUINO_STATE = SETUP_WISH;
+        }
     }
 }
 
@@ -104,11 +115,20 @@ void loop_sleep_countdown() {
 }
 
 void setup_wish() {
+    LCD.clear();
+    // todo: scroll text
+    LCD.print("Some wish!");
 
+    WISH_START_TS = millis();
+    ARDUINO_STATE = WISH;
 }
 
 void loop_wish() {
+    unsigned long now = millis();
 
+    if (now >= WISH_START_TS + WISH_DURATION) { /// if wish duration has passed
+        // ...
+    }
 }
 
 void setup() {

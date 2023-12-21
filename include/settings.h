@@ -3,17 +3,31 @@
 #include "../lib/Song/Song.h"
 #include "../lib/Note/Note.h"
 
+// Celebrate countdown settings:
+/// Countdown ticks count:
+const unsigned short CELEBRATE_COUNTDOWN_TICK_COUNT = 5;
+
+/// Tone of the countdown tick.
+const unsigned short CELEBRATE_COUNTDOWN_TICK_TONE = 196 * 2;
+
+/// Duration of a countdown tick.
+const unsigned short CELEBRATE_COUNTDOWN_TICK_DURATION = 100;
+
+/// Time interval between countdown ticks (ms)
+const unsigned short CELEBRATE_COUNTDOWN_TICK_INTERVAL = 400;
+
+
 // Song settings:
-// BPM of the song.
+/// BPM of the song.
 const unsigned short SONG_BPM = 90;
 
 // Gap between notes in ms (to avoid legato).
 const unsigned short SONG_NOTE_GAP = 10;
 
-// Number of notes in the song.
+/// Number of notes in the song.
 const unsigned short SONG_NOTES_COUNT = 25;
 
-// Array of song notes
+/// Array of song notes
 Note SONG_NOTES[] = {
         // Bar 1:
         Note(TONE_G3, NOTE_DURATION_EIGHTH),
@@ -60,40 +74,37 @@ Note SONG_NOTES[] = {
 Song SONG = Song(SONG_BPM, SONG_NOTES, SONG_NOTES_COUNT, SONG_NOTE_GAP);
 
 
+// Wishes settings:
+/// Array of wishes will be displayed in order year by year:
+String WISHES[] = {"wish 1", "wish 2"};
+
+/// Duration of the wish state (in ms):
+const unsigned short WISH_DURATION = 30 * 1000;
+
+
 // Microphone settings:
-// Microphone trigger treshold from 0 to 1023.
+/// Microphone trigger treshold from 0 to 1023.
 const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 1023;
 
 // Required streak of treshold readings to trigger.
 const unsigned short MICROPHONE_TRIGGER_STREAK = 1;
 
 
-// Celebrate countdown settings:
-// Countdown ticks count:
-const unsigned short CELEBRATE_COUNTDOWN_TICK_COUNT = 5;
-
-// Tone of the countdown tick.
-const unsigned short CELEBRATE_COUNTDOWN_TICK_TONE = 196 * 2;
-
-// Duration of a countdown tick.
-const unsigned short CELEBRATE_COUNTDOWN_TICK_DURATION = 100;
-
-// Time interval between countdown ticks (ms)
-const unsigned short CELEBRATE_COUNTDOWN_TICK_INTERVAL = 400;
-
-
 // Sleep countdown settings:
+/// Countdown ticks count:
 const unsigned short SLEEP_COUNTDOWN_TICK_COUNT = 5;
 
-// Tone of the countdown tick.
+/// Tone of the countdown tick.
 const unsigned short SLEEP_COUNTDOWN_TICK_TONE = 196 * 2;
 
-// Duration of a countdown tick.
+/// Duration of a countdown tick.
 const unsigned short SLEEP_COUNTDOWN_TICK_DURATION = 100;
 
-// Time interval between countdown ticks (ms)
+/// Time interval between countdown ticks (ms)
 const unsigned short SLEEP_COUNTDOWN_TICK_INTERVAL = 400;
 
+// Other settings:
+const unsigned short BORN_YEAR = 2005;
 
 #define EVERLASTING_BIRTHDAY_CARD_SETTINGS_H
 

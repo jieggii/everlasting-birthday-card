@@ -5,12 +5,13 @@
 class Candle {
 public:
     unsigned short pin;
+    bool powered = false;
 
     explicit Candle(unsigned short pin);
 
     void init() const;
 
-    void set_state(bool state) const;
+    void set_powered(bool new_state);
 };
 
 
