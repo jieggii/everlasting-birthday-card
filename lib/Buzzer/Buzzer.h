@@ -40,6 +40,7 @@ public:
     // Finish ticking.
     void finish_ticking();
 
+    void abort_song();
 
     void handle();
 
@@ -87,7 +88,7 @@ private:
     void handle_song();
 
     // Resets buzzer, interrupts song.
-    void abort_song();
+//    void abort_song();
 
     // Handles ticking.
     void handle_ticking();

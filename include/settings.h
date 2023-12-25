@@ -74,20 +74,25 @@ Note SONG_NOTES[] = {
 Song SONG = Song(SONG_BPM, SONG_NOTES, SONG_NOTES_COUNT, SONG_NOTE_GAP);
 
 
-// Wishes settings:
-/// Array of wishes will be displayed in order year by year:
-String WISHES[] = {"wish 1", "wish 2"};
-
-/// Duration of the wish state (in ms):
-const unsigned short WISH_DURATION = 30 * 1000;
-
-
 // Microphone settings:
 /// Microphone trigger treshold from 0 to 1023.
 const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 1023;
 
 // Required streak of treshold readings to trigger.
-const unsigned short MICROPHONE_TRIGGER_STREAK = 1;
+const unsigned short MICROPHONE_TRIGGER_STREAK = 2;
+
+// Wishes settings:
+/// Array of wishes will be displayed in order year by year:
+String WISHES[] = {"wish 1", "wish 2"};
+
+/// Duration of the wish state (in ms):
+const unsigned int WISH_DURATION = 60 * 5 * 1000;
+
+/// Duration of the first frame of wish in the lcd screen.
+const unsigned short WISH_DISPLAY_FIRST_FRAME_DURATION = 3 * 1000;
+
+/// Duration of all frames of wish except the first frame in the lcd screen.
+const unsigned short WISH_DISPLAY_FRAME_DURATION = 500;
 
 
 // Sleep countdown settings:

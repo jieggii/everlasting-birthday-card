@@ -5,7 +5,47 @@
 
 class Display : public LiquidCrystal_I2C {
 public:
+
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
+
+    void start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration);
+
+    void stop_displaying();
+
+    void handle();
+
+private:
+    /// Is true when displaying text, false when not.
+    bool displaying = false;
+
+    /// Is true when we are at the first frame.
+    bool current_frame_is_first = false;
+
+//    bool previous_frame_was_first = false;
+
+    /// Long text which will be displayed and scrolled on the LCD screen.
+    String text;
+
+    /// Length of the text being displayed.
+    unsigned int text_length;
+
+    /// Duration of a text frame being displayed while scrolling.
+    short frame_duration;
+
+    /// Duration of a first text frame being displayed while scrolling.
+    short first_frame_duration;
+
+    /// Duration of the previous frame.
+    unsigned short previous_frame_duration;
+
+    /// Timestamp when the current frame was displayed.
+    unsigned long frame_displayed_ts = 0;
+
+    /// Index of the frame beginning in the text.
+    unsigned short frame_start = 0;
+
+    /// Frame length
+    const unsigned short frame_length = 16;
 };
 
 
