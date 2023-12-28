@@ -16,7 +16,8 @@ int Microphone::read() const {
 
 bool Microphone::is_triggered(unsigned short treshold, unsigned short streak) {
     int reading = this->read();
-    if (reading == static_cast<int>(treshold)) {
+//    Serial.println(reading);
+    if (reading >= static_cast<int>(treshold)) {
         this->trigger_streak += 1;
         if (this->trigger_streak == streak) {
             this->trigger_streak = 0;

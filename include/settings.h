@@ -1,5 +1,7 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_SETTINGS_H
 
+#include "Arduino.h"
+
 #include "../lib/Song/Song.h"
 #include "../lib/Note/Note.h"
 
@@ -76,10 +78,10 @@ Song SONG = Song(SONG_BPM, SONG_NOTES, SONG_NOTES_COUNT, SONG_NOTE_GAP);
 
 // Microphone settings:
 /// Microphone trigger treshold from 0 to 1023.
-const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 1023;
+const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 600;
 
 // Required streak of treshold readings to trigger.
-const unsigned short MICROPHONE_TRIGGER_STREAK = 2;
+const unsigned short MICROPHONE_TRIGGER_STREAK = 5;
 
 // Wishes settings:
 /// Array of wishes will be displayed in order year by year:

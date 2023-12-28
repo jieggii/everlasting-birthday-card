@@ -1,42 +1,47 @@
 #include <Arduino.h>
+#include "avr/sleep.h"
+#include "avr/power.h"
 
-#include "pinout.h"
-#include "settings.h"
+#include "SPI.h"
+#include "RTClib.h"
+
 #include "../lib/Buzzer/Buzzer.h"
 #include "../lib/Microphone/Microphone.h"
 #include "../lib/Candle/Candle.h"
 #include "../lib/Display/Display.h"
 
+#include "pinout.h"
+#include "settings.h"
+
 
 // All states of the birthday card.
-enum ArduinoState {
+enum State {
     // Arduino is waiting for the birthday date (DS3231 alarm interrupt).
-    ARDUINO_STATE_SLEEP,
-    ARDUINO_STATE_SETUP_SLEEP,
+    STATE_SLEEP_LOOP,
+    STATE_SLEEP_SETUP,
 
     // Arduino is counting down until it begins celebrating.
-    ARDUINO_STATE_CELEBRATE_COUNTDOWN,
-    ARDUINO_STATE_SETUP_CELEBRATE_COUNTDOWN,
+    STATE_CELEBRATE_COUNTDOWN_LOOP,
+    STATE_CELEBRATE_COUNTDOWN_SETUP,
 
     // Arduino is playing the Happy Birthday song, waiting the candle to be blown.
-    ARDUINO_STATE_CELEBRATE,
-    ARDUINO_STATE_SETUP_CELEBRATE,
+    STATE_CELEBRATE_LOOP,
+    STATE_CELEBRATE_SETUP,
 
     // Arduino is displaying a wish using LCD screen.
-    ARDUINO_STATE_WISH,
-    ARDUINO_STATE_SETUP_WISH,
+    STATE_WISH_LOOP,
+    STATE_WISH_SETUP,
 
     // Arduino is counting down until it goes to a sleep mode
-    ARDUINO_STATE_SLEEP_COUNTDOWN,
-    ARDUINO_STATE_SETUP_SLEEP_COUNTDOWN,
+    STATE_SLEEP_COUNTDOWN_LOOP,
+    STATE_SLEEP_COUNTDOWN_SETUP,
 };
 
 /// Current Arduino state.
-ArduinoState ARDUINO_STATE = ARDUINO_STATE_SETUP_CELEBRATE;
-
+State STATE;
 
 /// Index of the current wish to be displayed.
-short WISH_INDEX = 0;
+//short WISH_INDEX = 0;
 
 unsigned long WISH_START_TS = 0;
 
@@ -45,37 +50,97 @@ Display LCD(LCD_ADDRESS, 16, 2);
 Microphone MICROPHONE(MICROPHONE_PIN);
 Buzzer BUZZER(BUZZER_PIN, SONG);
 Candle CANDLE(CANDLE_PIN);
+RTC_DS3231 RTC;
 
 
-void setup_wait() {
-
+void wake_up_ISR() {
+    sleep_disable();
+    detachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN));
+    Serial.println("info: caught interrupt!!!");
 }
 
-void loop_wait() {
-    // ...
+void sleep_setup() {
+    RTC.clearAlarm(1);
+    RTC.clearAlarm(2);
 
-    ARDUINO_STATE = ARDUINO_STATE_SETUP_CELEBRATE_COUNTDOWN;
+    RTC.writeSqwPinMode(DS3231_OFF);
+
+    RTC.disableAlarm(2);
+
+    DateTime now = RTC.now();
+//    DateTime alarmAt = DateTime(now.year(), 12, 28, 1, 13);
+    DateTime alarmAt = now + TimeSpan(60);
+
+    if (RTC.setAlarm1(alarmAt, DS3231_A1_Date)) {
+        Serial.println("info: set alarm to " + String(alarmAt.timestamp()) + " now = " + String(now.timestamp()));
+    } else {
+        Serial.println("error: could not set alarm");
+    }
+    Serial.println("info: set state to SLEEP_LOOP");
+    STATE = STATE_SLEEP_LOOP;
 }
 
-void setup_countdown() {
+void sleep_loop() {
+    static byte prevADCSRA = ADCSRA;
+    ADCSRA = 0;
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+
+    // Ensure we can wake up again by first disabling interrupts (temporarily) so
+    // the wakeISR does not run before we are asleep and then prevent interrupts,
+    // and then defining the ISR (Interrupt Service Routine) to run when poked awake
+    noInterrupts();
+    attachInterrupt(
+            digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN), wake_up_ISR, LOW
+    );
+
+    // Send a message just to show we are about to sleep:
+    Serial.println("info: arduino put into power down mode");
+    Serial.flush();
+
+    // Allow interrupts now
+    interrupts();
+
+    // And enter sleep mode as set above
+    sleep_cpu();
+
+    // --------------------------------------------------------
+    // µController is now asleep until woken up by an interrupt
+    // --------------------------------------------------------
+
+    // Wakes up at this point when wakePin is brought LOW - interrupt routine is run first
+    Serial.println("info: arduino woke up by alarm interrupt");
+
+    // Re-enable ADC if it was previously running
+    ADCSRA = prevADCSRA;
+
+    Serial.println("info: set state to COUNTDOWN_SETUP");
+    STATE = STATE_CELEBRATE_COUNTDOWN_SETUP;
+}
+
+void countdown_setup() {
     BUZZER.init();
     BUZZER.start_ticking(
             CELEBRATE_COUNTDOWN_TICK_INTERVAL,
             CELEBRATE_COUNTDOWN_TICK_DURATION,
             CELEBRATE_COUNTDOWN_TICK_TONE
     );
-    ARDUINO_STATE = ARDUINO_STATE_CELEBRATE_COUNTDOWN;
+
+    Serial.println("info: set state COUNTDOWN_LOOP");
+    STATE = STATE_CELEBRATE_COUNTDOWN_LOOP;
 }
 
-void loop_countdown() {
+void countdown_loop() {
     BUZZER.handle();
     if (BUZZER.tick_streak == CELEBRATE_COUNTDOWN_TICK_COUNT) {
         BUZZER.finish_ticking();
-        ARDUINO_STATE = ARDUINO_STATE_SETUP_CELEBRATE;
+
+        Serial.println("info: set state to CELEBRATE_SETUP");
+        STATE = STATE_CELEBRATE_SETUP;
     }
 }
 
-void setup_celebrate() {
+void celebrate_setup() {
     // init hardware:
     MICROPHONE.init();
     LCD.init();
@@ -90,10 +155,10 @@ void setup_celebrate() {
     String caption = "Zadui svechky!!!";
     LCD.start_displaying(text, caption, 3000, 550);
 
-    ARDUINO_STATE = ARDUINO_STATE_CELEBRATE;
+    STATE = STATE_CELEBRATE_LOOP;
 }
 
-void loop_celebrate() {
+void celebrate_loop() {
     BUZZER.handle(); // play the song
     LCD.handle();
 
@@ -108,20 +173,20 @@ void loop_celebrate() {
     } else { // If candle is already blown
         if (BUZZER.state == BUZZER_STATE_STANDBY) { // if song has already stopped playing
             // Go to the ARDUINO_STATE_SETUP_WISH state:
-            ARDUINO_STATE = ARDUINO_STATE_SETUP_WISH;
+            STATE = STATE_WISH_SETUP;
         }
     }
 }
 
-void setup_sleep_countdown() {
+void sleep_countdown_setup() {
 
 }
 
-void loop_sleep_countdown() {
+void sleep_countdown_loop() {
 
 }
 
-void setup_wish() {
+void wish_setup() {
     LCD.clear();
 
     String text = "Hello, World! This is a long text for scrolling.";
@@ -130,10 +195,10 @@ void setup_wish() {
     LCD.start_displaying(text, caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION);
 
     WISH_START_TS = millis();
-    ARDUINO_STATE = ARDUINO_STATE_WISH;
+    STATE = STATE_WISH_LOOP;
 }
 
-void loop_wish() {
+void wish_loop() {
     unsigned long now = millis();
 
     LCD.handle();
@@ -144,45 +209,78 @@ void loop_wish() {
 //    }
 }
 
+void fall_asleep() {
+
+}
+
+void wake_up() {
+
+}
+
 void setup() {
     Serial.begin(9600);
+
+    pinMode(13, OUTPUT);
+    digitalWrite(13, HIGH);
+    delay(5000);
+    digitalWrite(13, LOW);
+
+    /// Set up hardware:
+    pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
+
+    if (!RTC.begin()) {
+        Serial.println("Couldn't find RTC!");
+        Serial.flush();
+        while (true) {
+            delay(10);
+        };
+    }
+
+    if (RTC.lostPower()) {
+        RTC.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
+
+    RTC.disable32K();
+
+    Serial.println("info: set state to SLEEP_SETUP");
+    STATE = STATE_SLEEP_SETUP;
 }
 
 void loop() {
-    switch (ARDUINO_STATE) {
-        case ARDUINO_STATE_SETUP_SLEEP:
-            setup_wait();
+    switch (STATE) {
+        case STATE_SLEEP_SETUP:
+            sleep_setup();
             break;
-        case ARDUINO_STATE_SLEEP:
-            loop_wait();
-            break;
-
-        case ARDUINO_STATE_SETUP_CELEBRATE_COUNTDOWN:
-            setup_countdown();
-            break;
-        case ARDUINO_STATE_CELEBRATE_COUNTDOWN:
-            loop_countdown();
+        case STATE_SLEEP_LOOP:
+            sleep_loop();
             break;
 
-        case ARDUINO_STATE_SETUP_CELEBRATE:
-            setup_celebrate();
+        case STATE_CELEBRATE_COUNTDOWN_SETUP:
+            countdown_setup();
             break;
-        case ARDUINO_STATE_CELEBRATE:
-            loop_celebrate();
-            break;
-
-        case ARDUINO_STATE_SETUP_SLEEP_COUNTDOWN:
-            setup_sleep_countdown();
-            break;
-        case ARDUINO_STATE_SLEEP_COUNTDOWN:
-            loop_sleep_countdown();
+        case STATE_CELEBRATE_COUNTDOWN_LOOP:
+            countdown_loop();
             break;
 
-        case ARDUINO_STATE_SETUP_WISH:
-            setup_wish();
+        case STATE_CELEBRATE_SETUP:
+            celebrate_setup();
             break;
-        case ARDUINO_STATE_WISH:
-            loop_wish();
+        case STATE_CELEBRATE_LOOP:
+            celebrate_loop();
+            break;
+
+        case STATE_SLEEP_COUNTDOWN_SETUP:
+            sleep_countdown_setup();
+            break;
+        case STATE_SLEEP_COUNTDOWN_LOOP:
+            sleep_countdown_loop();
+            break;
+
+        case STATE_WISH_SETUP:
+            wish_setup();
+            break;
+        case STATE_WISH_LOOP:
+            wish_loop();
             break;
     }
 }
