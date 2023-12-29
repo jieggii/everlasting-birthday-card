@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "avr/sleep.h"
-#include "avr/power.h"
+#include "avr/power.h" // todo remove?
 
-#include "SPI.h"
+#include "SPI.h" // todo remove?
 #include "RTClib.h"
 
 #include "../lib/Buzzer/Buzzer.h"
@@ -41,7 +41,7 @@ enum State {
 State STATE;
 
 /// Index of the current wish to be displayed.
-//short WISH_INDEX = 0;
+short WISH_INDEX = 0;
 
 unsigned long WISH_START_TS = 0;
 
@@ -60,6 +60,7 @@ void wake_up_ISR() {
 }
 
 void sleep_setup() {
+    // Set up RTC:
     RTC.clearAlarm(1);
     RTC.clearAlarm(2);
 
@@ -69,13 +70,20 @@ void sleep_setup() {
 
     DateTime now = RTC.now();
 //    DateTime alarmAt = DateTime(now.year(), 12, 28, 1, 13);
-    DateTime alarmAt = now + TimeSpan(60);
+    DateTime alarmAt = now + TimeSpan(10);
 
     if (RTC.setAlarm1(alarmAt, DS3231_A1_Date)) {
-        Serial.println("info: set alarm to " + String(alarmAt.timestamp()) + " now = " + String(now.timestamp()));
+        Serial.println(
+                "info: current date is " + String(alarmAt.timestamp()) + ", set alarm to " +
+                String(alarmAt.timestamp())
+        );
     } else {
         Serial.println("error: could not set alarm");
     }
+
+    // Set up LCD
+    LCD.noBacklight();
+
     Serial.println("info: set state to SLEEP_LOOP");
     STATE = STATE_SLEEP_LOOP;
 }
@@ -192,7 +200,7 @@ void wish_setup() {
     String text = "Hello, World! This is a long text for scrolling.";
     String caption = "caption :3";
 
-    LCD.start_displaying(text, caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION);
+    LCD.start_displaying(WISHES[WISH_INDEX], caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION);
 
     WISH_START_TS = millis();
     STATE = STATE_WISH_LOOP;
@@ -203,10 +211,9 @@ void wish_loop() {
 
     LCD.handle();
 
-
-//    if (now >= WISH_START_TS + WISH_DURATION) { /// if wish duration has passed
-//        // ...
-//    }
+    if (now - WISH_DURATION >= WISH_START_TS) { /// if wish duration has passed
+        // ...
+    }
 }
 
 void fall_asleep() {
@@ -225,11 +232,17 @@ void setup() {
     delay(5000);
     digitalWrite(13, LOW);
 
-    /// Set up hardware:
+    /// Input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
+    pinMode(MICROPHONE_PIN, INPUT);
 
+    /// Output pins:
+    pinMode(CANDLE_PIN, OUTPUT);
+    pinMode(BUZZER_PIN, OUTPUT);
+
+    /// Initialize RTC:
     if (!RTC.begin()) {
-        Serial.println("Couldn't find RTC!");
+        Serial.println("error: couldn't find RTC!");
         Serial.flush();
         while (true) {
             delay(10);
@@ -237,6 +250,7 @@ void setup() {
     }
 
     if (RTC.lostPower()) {
+        Serial.println("info: set date and time");
         RTC.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
 
