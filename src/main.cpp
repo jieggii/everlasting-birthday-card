@@ -123,7 +123,7 @@ void sleep_loop() {
     STATE = STATE_CELEBRATE_COUNTDOWN_SETUP;
 }
 
-void countdown_setup() {
+void celebrate_countdown_setup() {
     BUZZER.start_ticking(
             CELEBRATE_COUNTDOWN_TICK_INTERVAL,
             CELEBRATE_COUNTDOWN_TICK_DURATION,
@@ -134,7 +134,7 @@ void countdown_setup() {
     STATE = STATE_CELEBRATE_COUNTDOWN_LOOP;
 }
 
-void countdown_loop() {
+void celebrate_countdown_loop() {
     BUZZER.handle();
     if (BUZZER.tick_streak == CELEBRATE_COUNTDOWN_TICK_COUNT) {
         BUZZER.finish_ticking();
@@ -156,6 +156,7 @@ void celebrate_setup() {
     String caption = "Zadui svechky!!!";
     LCD.start_displaying(text, caption, 3000, 550);
 
+    Serial.println("info: set state to CELEBRATE_LOOP");
     STATE = STATE_CELEBRATE_LOOP;
 }
 
@@ -184,12 +185,13 @@ void celebrate_loop() {
 }
 
 void wish_setup() {
-//    LCD.clear(); // todo: is it needed?
     LCD.start_displaying(
             WISHES[WISH_INDEX], WISH_CAPTION, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION
     );
 
     WISH_START_TS = millis();
+
+    Serial.println("info: set state to WISH_LOOP");
     STATE = STATE_WISH_LOOP;
 }
 
@@ -211,7 +213,7 @@ void sleep_countdown_setup() {
             SLEEP_COUNTDOWN_TICK_TONE
     );
 
-    Serial.println("info: set state CELEBRATE_COUNTDOWN_LOOP");
+    Serial.println("info: set state STATE_SLEEP_COUNTDOWN_LOOP");
     STATE = STATE_SLEEP_COUNTDOWN_LOOP;
 }
 
@@ -230,8 +232,8 @@ void sleep_countdown_loop() {
         LCD.noBacklight();
         LCD.clear();
 
-        Serial.println("info: set state to STATE_SLEEP_SETUP");
-        STATE = STATE_SLEEP_COUNTDOWN_SETUP;
+        Serial.println("info: set state to SLEEP_SETUP");
+        STATE = STATE_SLEEP_SETUP;
     }
 }
 
@@ -288,10 +290,10 @@ void loop() {
             break;
 
         case STATE_CELEBRATE_COUNTDOWN_SETUP:
-            countdown_setup();
+            celebrate_countdown_setup();
             break;
         case STATE_CELEBRATE_COUNTDOWN_LOOP:
-            countdown_loop();
+            celebrate_countdown_loop();
             break;
 
         case STATE_CELEBRATE_SETUP:
