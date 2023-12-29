@@ -5,23 +5,23 @@
 
 class Display : public LiquidCrystal_I2C {
 public:
+    /// Is true when displaying text, false when not.
+    bool displaying = false;
 
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
 
     void start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration);
 
-    void stop_displaying();
+    void finish_displaying();
 
     void handle();
 
 private:
-    /// Is true when displaying text, false when not.
-    bool displaying = false;
+    /// Indicates whether text will be displayed one more time or not.
+    bool display_next_time = false;
 
     /// Is true when we are at the first frame.
     bool current_frame_is_first = false;
-
-//    bool previous_frame_was_first = false;
 
     /// Long text which will be displayed and scrolled on the LCD screen.
     String text;
@@ -47,6 +47,5 @@ private:
     /// Frame length
     const unsigned short frame_length = 16;
 };
-
 
 #endif //EVERLASTING_BIRTHDAY_CARD_DISPLAY_H

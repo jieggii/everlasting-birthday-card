@@ -19,10 +19,15 @@ void Display::start_displaying(String &text, String &caption, short first_frame_
     this->previous_frame_duration = first_frame_duration;
 
     this->displaying = true;
+    this->display_next_time = true;
     this->text_length = text.length();
 
     this->setCursor(0, 1);
     this->print(caption);
+}
+
+void Display::finish_displaying() {
+    display_next_time = false;
 }
 
 void Display::handle() {
@@ -33,6 +38,12 @@ void Display::handle() {
     unsigned long now = millis();
 
     if ((this->current_frame_is_first) || (now - this->frame_displayed_ts >= this->previous_frame_duration)) {
+        // Stop displaying text if it should not be displayed.
+        if (this->current_frame_is_first && !this->display_next_time) {
+            this->displaying = false;
+            return;
+        }
+
         unsigned short frame_end = this->frame_start + this->frame_length;
 
         this->setCursor(0, 0);

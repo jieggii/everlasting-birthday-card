@@ -87,8 +87,11 @@ const unsigned short MICROPHONE_TRIGGER_STREAK = 5;
 /// Array of wishes will be displayed in order year by year:
 String WISHES[] = {"wish 1", "wish 2"};
 
+/// Wish caption (will be displayed under all wishes being displayed):
+String WISH_CAPTION = "<3 uraa s dr!!!";
+
 /// Duration of the wish state (in ms):
-const unsigned int WISH_DURATION = 60 * 5 * 1000;
+const unsigned long WISH_DURATION = 60UL * 5 * 1000;
 
 /// Duration of the first frame of wish in the lcd screen.
 const unsigned short WISH_DISPLAY_FIRST_FRAME_DURATION = 3 * 1000;
@@ -111,7 +114,7 @@ const unsigned short SLEEP_COUNTDOWN_TICK_DURATION = 100;
 const unsigned short SLEEP_COUNTDOWN_TICK_INTERVAL = 400;
 
 // Other settings:
-const unsigned short BORN_YEAR = 2005;
+//const unsigned short BORN_YEAR = 2005;
 
 #define EVERLASTING_BIRTHDAY_CARD_SETTINGS_H
 

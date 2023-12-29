@@ -56,7 +56,7 @@ RTC_DS3231 RTC;
 void wake_up_ISR() {
     sleep_disable();
     detachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN));
-    Serial.println("info: caught interrupt!!!");
+    Serial.println("info: received wake up interrupt");
 }
 
 void sleep_setup() {
@@ -64,7 +64,7 @@ void sleep_setup() {
     RTC.clearAlarm(1);
     RTC.clearAlarm(2);
 
-    RTC.writeSqwPinMode(DS3231_OFF);
+    RTC.writeSqwPinMode(DS3231_OFF); // todo: move to setup
 
     RTC.disableAlarm(2);
 
@@ -74,15 +74,12 @@ void sleep_setup() {
 
     if (RTC.setAlarm1(alarmAt, DS3231_A1_Date)) {
         Serial.println(
-                "info: current date is " + String(alarmAt.timestamp()) + ", set alarm to " +
+                "info: current date is " + String(alarmAt.timestamp()) + ", set wake up alarm to " +
                 String(alarmAt.timestamp())
         );
     } else {
         Serial.println("error: could not set alarm");
     }
-
-    // Set up LCD
-    LCD.noBacklight();
 
     Serial.println("info: set state to SLEEP_LOOP");
     STATE = STATE_SLEEP_LOOP;
@@ -127,7 +124,6 @@ void sleep_loop() {
 }
 
 void countdown_setup() {
-    BUZZER.init();
     BUZZER.start_ticking(
             CELEBRATE_COUNTDOWN_TICK_INTERVAL,
             CELEBRATE_COUNTDOWN_TICK_DURATION,
@@ -186,51 +182,70 @@ void celebrate_loop() {
     }
 }
 
-void sleep_countdown_setup() {
-
-}
-
-void sleep_countdown_loop() {
-
-}
-
 void wish_setup() {
     LCD.clear();
 
-    String text = "Hello, World! This is a long text for scrolling.";
     String caption = "caption :3";
 
-    LCD.start_displaying(WISHES[WISH_INDEX], caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION);
+    LCD.start_displaying(
+            WISHES[WISH_INDEX], caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION
+    );
 
     WISH_START_TS = millis();
     STATE = STATE_WISH_LOOP;
 }
 
 void wish_loop() {
-    unsigned long now = millis();
-
     LCD.handle();
 
-    if (now - WISH_DURATION >= WISH_START_TS) { /// if wish duration has passed
-        // ...
+    if (millis() - WISH_DURATION >= WISH_START_TS) { // if wish duration has passed
+        Serial.println("info: set state to SLEEP_COUNTDOWN_SETUP");
+        STATE = STATE_SLEEP_COUNTDOWN_SETUP;
+//        LCD.finish_displaying(); // gracefully stop displaying wish
     }
-}
 
-void fall_asleep() {
 
 }
 
-void wake_up() {
 
+void sleep_countdown_setup() {
+    BUZZER.start_ticking(
+            SLEEP_COUNTDOWN_TICK_INTERVAL,
+            SLEEP_COUNTDOWN_TICK_DURATION,
+            SLEEP_COUNTDOWN_TICK_TONE
+    );
+
+    Serial.println("info: set state CELEBRATE_COUNTDOWN_LOOP");
+    STATE = STATE_SLEEP_COUNTDOWN_LOOP;
+}
+
+void sleep_countdown_loop() {
+    LCD.handle();
+    BUZZER.handle();
+
+    if (BUZZER.tick_streak == SLEEP_COUNTDOWN_TICK_COUNT) {
+        LCD.finish_displaying(); // do not display the text next time
+    }
+
+    if (!LCD.displaying) { // if finished displaying the current wish
+        BUZZER.finish_ticking(); // disable buzzer
+
+        // disable LCD:
+        LCD.noBacklight();
+        LCD.clear();
+
+        Serial.println("info: set state to STATE_SLEEP_SETUP");
+        STATE = STATE_SLEEP_COUNTDOWN_SETUP;
+    }
 }
 
 void setup() {
     Serial.begin(9600);
 
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(5000);
-    digitalWrite(13, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
 
     /// Input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
@@ -239,13 +254,13 @@ void setup() {
     /// Output pins:
     pinMode(CANDLE_PIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
+    BUZZER.init();
 
     /// Initialize RTC:
     if (!RTC.begin()) {
-        Serial.println("error: couldn't find RTC!");
-        Serial.flush();
         while (true) {
-            delay(10);
+            Serial.println("error: couldn't find RTC!");
+            delay(300);
         };
     }
 
