@@ -7,16 +7,16 @@
 
 // Celebrate countdown settings:
 /// Countdown ticks count:
-const unsigned short CELEBRATE_COUNTDOWN_TICK_COUNT = 5;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_COUNT = 30;
 
 /// Tone of the countdown tick.
 const unsigned short CELEBRATE_COUNTDOWN_TICK_TONE = 196 * 2;
 
 /// Duration of a countdown tick.
-const unsigned short CELEBRATE_COUNTDOWN_TICK_DURATION = 100;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_DURATION = 200;
 
 /// Time interval between countdown ticks (ms)
-const unsigned short CELEBRATE_COUNTDOWN_TICK_INTERVAL = 400;
+const unsigned short CELEBRATE_COUNTDOWN_TICK_INTERVAL = 1000;
 
 
 // Song settings:
@@ -91,7 +91,8 @@ String WISHES[] = {"wish 1", "wish 2"};
 String WISH_CAPTION = "<3 uraa s dr!!!";
 
 /// Duration of the wish state (in ms):
-const unsigned long WISH_DURATION = 60UL * 5 * 1000;
+//const unsigned long WISH_DURATION = 60UL * 5 * 1000;
+const unsigned long WISH_DURATION = 5000;
 
 /// Duration of the first frame of wish in the lcd screen.
 const unsigned short WISH_DISPLAY_FIRST_FRAME_DURATION = 3 * 1000;
@@ -102,16 +103,16 @@ const unsigned short WISH_DISPLAY_FRAME_DURATION = 500;
 
 // Sleep countdown settings:
 /// Countdown ticks count:
-const unsigned short SLEEP_COUNTDOWN_TICK_COUNT = 5;
+const unsigned short SLEEP_COUNTDOWN_TICK_COUNT = 10;
 
 /// Tone of the countdown tick.
 const unsigned short SLEEP_COUNTDOWN_TICK_TONE = 196 * 2;
 
 /// Duration of a countdown tick.
-const unsigned short SLEEP_COUNTDOWN_TICK_DURATION = 100;
+const unsigned short SLEEP_COUNTDOWN_TICK_DURATION = 200;
 
 /// Time interval between countdown ticks (ms)
-const unsigned short SLEEP_COUNTDOWN_TICK_INTERVAL = 400;
+const unsigned short SLEEP_COUNTDOWN_TICK_INTERVAL = 1000;
 
 // Other settings:
 //const unsigned short BORN_YEAR = 2005;
