@@ -7,8 +7,8 @@ Buzzer::Buzzer(unsigned short pin, Song song) : song(song) {
     this->song = song;
 }
 
-void Buzzer::init() const {
-    pinMode(pin, OUTPUT);
+void Buzzer::init_pin() const {
+    pinMode(this->pin, OUTPUT);
 }
 
 void Buzzer::start_ticking(int interval, int duration, int tone) {

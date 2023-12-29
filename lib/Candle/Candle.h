@@ -9,7 +9,7 @@ public:
 
     explicit Candle(unsigned short pin);
 
-    void init() const;
+    void init_pin() const;
 
     /// Turn turn_on the candle.
     void turn_on();

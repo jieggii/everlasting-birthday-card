@@ -6,7 +6,7 @@ class Microphone {
 public:
     explicit Microphone(unsigned short pin);
 
-    void init() const;
+    void init_pin() const;
 
     bool is_triggered(unsigned short treshold, unsigned short target);
 

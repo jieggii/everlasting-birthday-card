@@ -70,7 +70,7 @@ void sleep_setup() {
 
     DateTime now = RTC.now();
 //    DateTime alarmAt = DateTime(now.year(), 12, 28, 1, 13);
-    DateTime alarmAt = now + TimeSpan(10);
+    DateTime alarmAt = now + TimeSpan(5);
 
     if (RTC.setAlarm1(alarmAt, DS3231_A1_Date)) {
         Serial.println(
@@ -160,32 +160,33 @@ void celebrate_setup() {
 }
 
 void celebrate_loop() {
-    BUZZER.handle(); // play the song
-    LCD.handle();
+    BUZZER.handle(); // continue playing the song
+    LCD.handle(); // continue displaying the text
 
-    if (CANDLE.powered) { // if candle is not blown yet
+    if (CANDLE.powered) { // if candle is still turned on
         bool microphone_triggered = MICROPHONE.is_triggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
         );
-        if (microphone_triggered) {
+        if (microphone_triggered) { // if the candle is blown
             CANDLE.turn_off();
             BUZZER.finish_song();
         }
-    } else { // If candle is already blown
-        if (BUZZER.state == BUZZER_STATE_STANDBY) { // if song has already stopped playing
-            // Go to the ARDUINO_STATE_SETUP_WISH state:
-            STATE = STATE_WISH_SETUP;
-        }
+
+        return;
+    }
+
+    // If candle is already blown:
+    if (BUZZER.state == BUZZER_STATE_STANDBY) { // if song has already stopped playing
+        // Go to the ARDUINO_STATE_SETUP_WISH state:
+        Serial.println("info: set state to WISH_SETUP");
+        STATE = STATE_WISH_SETUP;
     }
 }
 
 void wish_setup() {
-    LCD.clear();
-
-    String caption = "caption :3";
-
+//    LCD.clear(); // todo: is it needed?
     LCD.start_displaying(
-            WISHES[WISH_INDEX], caption, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION
+            WISHES[WISH_INDEX], WISH_CAPTION, WISH_DISPLAY_FIRST_FRAME_DURATION, WISH_DISPLAY_FRAME_DURATION
     );
 
     WISH_START_TS = millis();
@@ -193,19 +194,17 @@ void wish_setup() {
 }
 
 void wish_loop() {
-    LCD.handle();
+    LCD.handle(); // continue displaying the current wish
 
-    if (millis() - WISH_DURATION >= WISH_START_TS) { // if wish duration has passed
+    if (millis() - WISH_DURATION >= WISH_START_TS) { // if wish duration has expired
         Serial.println("info: set state to SLEEP_COUNTDOWN_SETUP");
         STATE = STATE_SLEEP_COUNTDOWN_SETUP;
-//        LCD.finish_displaying(); // gracefully stop displaying wish
     }
-
-
 }
 
 
 void sleep_countdown_setup() {
+    LCD.handle(); // continue displaying the current wish
     BUZZER.start_ticking(
             SLEEP_COUNTDOWN_TICK_INTERVAL,
             SLEEP_COUNTDOWN_TICK_DURATION,
@@ -217,17 +216,17 @@ void sleep_countdown_setup() {
 }
 
 void sleep_countdown_loop() {
-    LCD.handle();
-    BUZZER.handle();
+    LCD.handle(); // continue displaying the current wish
+    BUZZER.handle(); // make ticking sound using buzzer
 
     if (BUZZER.tick_streak == SLEEP_COUNTDOWN_TICK_COUNT) {
-        LCD.finish_displaying(); // do not display the text next time
+        LCD.finish_displaying(); // do not display the wish next time again
     }
 
     if (!LCD.displaying) { // if finished displaying the current wish
-        BUZZER.finish_ticking(); // disable buzzer
+        BUZZER.finish_ticking(); // stop making ticking sound
 
-        // disable LCD:
+        // disable the LCD:
         LCD.noBacklight();
         LCD.clear();
 
@@ -239,10 +238,13 @@ void sleep_countdown_loop() {
 void setup() {
     Serial.begin(9600);
 
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(5000);
-    digitalWrite(LED_BUILTIN, LOW);
+    // This block is needed in debugging purposes, todo remove later
+    {
+        pinMode(LED_BUILTIN, OUTPUT);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(5000);
+        digitalWrite(LED_BUILTIN, LOW);
+    }
 
     // Input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
@@ -259,11 +261,12 @@ void setup() {
     // Initialize RTC:
     if (!RTC.begin()) {
         while (true) {
-            Serial.println("error: couldn't find RTC!");
-            delay(300);
+            Serial.println("error: no RTC found");
+            delay(250);
         };
     }
 
+    // Set date and time if DS3231 stopped due to power loss:
     if (RTC.lostPower()) {
         Serial.println("info: set date and time");
         RTC.adjust(DateTime(F(__DATE__), F(__TIME__)));

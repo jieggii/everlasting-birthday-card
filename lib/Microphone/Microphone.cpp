@@ -6,7 +6,7 @@ Microphone::Microphone(unsigned short pin) {
     this->pin = pin;
 };
 
-void Microphone::init() const {
+void Microphone::init_pin() const {
     pinMode(this->pin, INPUT);
 }
 

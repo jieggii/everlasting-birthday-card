@@ -6,7 +6,7 @@ Candle::Candle(unsigned short pin) {
     this->pin = pin;
 }
 
-void Candle::init() const {
+void Candle::init_pin() const {
     pinMode(this->pin, OUTPUT);
 }
 

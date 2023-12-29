@@ -26,7 +26,7 @@ public:
     Buzzer(unsigned short pin, Song song);
 
     // Initialize buzzer.
-    void init() const;
+    void init_pin() const;
 
     // Start repeatedly playing song.
     void start_song();
