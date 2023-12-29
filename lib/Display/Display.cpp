@@ -38,10 +38,10 @@ void Display::handle() {
     unsigned long now = millis();
 
     if ((this->current_frame_is_first) || (now - this->frame_displayed_ts >= this->previous_frame_duration)) {
-        // Stop displaying text if it should not be displayed.
+        // Stop displaying text if it should not be displayed anymore:
         if (this->current_frame_is_first && !this->display_next_time) {
             this->displaying = false;
-            return;
+            return; // todo: test with and without the return statement (without it the first frame should be shown as well)
         }
 
         unsigned short frame_end = this->frame_start + this->frame_length;

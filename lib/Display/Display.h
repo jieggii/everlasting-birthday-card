@@ -23,7 +23,7 @@ private:
     /// Is true when we are at the first frame.
     bool current_frame_is_first = false;
 
-    /// Long text which will be displayed and scrolled on the LCD screen.
+    /// Long text which will be displayed and scrolled turn_on the LCD screen.
     String text;
 
     /// Length of the text being displayed.

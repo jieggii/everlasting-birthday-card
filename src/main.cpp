@@ -146,13 +146,10 @@ void countdown_loop() {
 
 void celebrate_setup() {
     // init hardware:
-    MICROPHONE.init();
-    LCD.init();
-    CANDLE.init();
 
     // setup hardware:
     BUZZER.start_song();
-    CANDLE.set_powered(true);
+    CANDLE.turn_on();
 
     LCD.backlight();
     String text = "Ogo, tebe uje " + String(19) + " let...";
@@ -247,16 +244,19 @@ void setup() {
     delay(5000);
     digitalWrite(LED_BUILTIN, LOW);
 
-    /// Input pins:
+    // Input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
     pinMode(MICROPHONE_PIN, INPUT);
+    MICROPHONE.init();
 
-    /// Output pins:
+    // Output pins:
     pinMode(CANDLE_PIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
     BUZZER.init();
+    LCD.init();
+    CANDLE.init();
 
-    /// Initialize RTC:
+    // Initialize RTC:
     if (!RTC.begin()) {
         while (true) {
             Serial.println("error: couldn't find RTC!");

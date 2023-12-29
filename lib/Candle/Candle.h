@@ -4,12 +4,21 @@
 
 class Candle {
 public:
-    unsigned short pin;
+    /// Indicates whether the candle LED turn_on or turn_off.
     bool powered = false;
 
     explicit Candle(unsigned short pin);
 
     void init() const;
+
+    /// Turn turn_on the candle.
+    void turn_on();
+
+    /// Turn turn_off the candle.
+    void turn_off();
+
+private:
+    unsigned short pin;
 
     void set_powered(bool new_state);
 };

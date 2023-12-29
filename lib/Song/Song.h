@@ -5,22 +5,22 @@
 
 class Song {
 public:
-    // Array of song notes.
+    /// Array of song notes.
     Note *notes;
 
-    // Number of notes in the song.
+    /// Number of notes in the song.
     unsigned short notes_count;
 
-    // Gap between notes in ms.
+    /// Time gap between notes in ms (to avoid legato).
     unsigned short note_gap;
 
-    // Duration of a half note in ms.
+    /// Duration of a half note in ms.
     unsigned int half_duration;
 
-    // Duration of a quarter note in ms.
+    /// Duration of a quarter note in ms.
     unsigned int quarter_duration;
 
-    // Duration of an eighth note in ms.
+    /// Duration of an eighth note in ms.
     unsigned int eighth_duration;
 
     Song(unsigned short bpm, Note notes[], unsigned short notes_count, unsigned short note_gap) {
@@ -29,7 +29,7 @@ public:
         this->note_gap = note_gap;
 
         // Precalculate durations for different notes:
-        float full_duration = (static_cast<float>(60) / bpm) * 3 * 1000;  // duration of a full note
+        float full_duration = (static_cast<float>(60) / bpm) * 3 * 1000;  // duration of a full note (the whole bar)
 
         this->half_duration = static_cast<unsigned int>(full_duration / 2);    // duration of a half note
         this->quarter_duration = static_cast<unsigned int>(full_duration / 4); // duration of a quarter note
