@@ -168,7 +168,7 @@ void celebrate_loop() {
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
         );
         if (microphone_triggered) {
-            CANDLE.set_powered(false);
+            CANDLE.turn_off();
             BUZZER.finish_song();
         }
     } else { // If candle is already blown
@@ -247,14 +247,14 @@ void setup() {
     // Input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP);
     pinMode(MICROPHONE_PIN, INPUT);
-    MICROPHONE.init();
+    MICROPHONE.init_pin();
 
     // Output pins:
     pinMode(CANDLE_PIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
-    BUZZER.init();
+    BUZZER.init_pin();
     LCD.init();
-    CANDLE.init();
+    CANDLE.init_pin();
 
     // Initialize RTC:
     if (!RTC.begin()) {
