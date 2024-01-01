@@ -6,7 +6,8 @@ Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
 
 }
 
-void Display::start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration) {
+void Display::
+start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration) {
     this->text = text;
     for (unsigned short i = 0; i < this->frame_length; i++) {
         this->text = text + " ";

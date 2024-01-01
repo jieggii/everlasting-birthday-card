@@ -8,6 +8,7 @@ public:
     /// Is true when displaying text, false when not.
     bool displaying = false;
 
+
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
 
     void start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration);
