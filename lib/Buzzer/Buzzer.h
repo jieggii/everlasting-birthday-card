@@ -5,13 +5,13 @@
 
 
 enum BuzzerState {
-    // The default mode, nothing is being played.
+    /// The default mode, nothing is being played.
     BUZZER_STATE_STANDBY,
 
-    // Song is being played.
+    /// Song is being played.
     BUZZER_STATE_SONG,
 
-    // Constant ticker is playing.
+    /// Buzzer is playing a ticking sound.
     BUZZER_STATE_TICKING,
 };
 
