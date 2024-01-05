@@ -236,7 +236,7 @@ void celebrate_loop() {
     BUZZER.handle(); // continue playing the song
     LCD.handle(); // continue displaying the text
 
-    if (CANDLE.powered) { // if candle is still turned on
+    if (CANDLE.is_powered()) { // if candle is still turned on
         bool microphone_triggered = MICROPHONE.is_triggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
         );

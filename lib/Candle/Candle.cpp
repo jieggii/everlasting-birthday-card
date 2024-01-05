@@ -4,6 +4,7 @@
 
 Candle::Candle(unsigned short pin) {
     this->pin = pin;
+    this->powered = false;
 }
 
 void Candle::init_pin() const {
@@ -11,18 +12,14 @@ void Candle::init_pin() const {
 }
 
 void Candle::turn_on() {
-    this->set_powered(true);
+    this->update_state(true);
 }
 
 void Candle::turn_off() {
-    this->set_powered(false);
+    this->update_state(false);
 }
 
-void Candle::set_powered(bool new_state) {
-    if (new_state) {
-        digitalWrite(this->pin, HIGH);
-    } else {
-        digitalWrite(this->pin, LOW);
-    }
+void Candle::update_state(bool new_state) {
+    digitalWrite(this->pin, new_state ? HIGH : LOW);
     this->powered = new_state;
 }
