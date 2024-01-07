@@ -5,96 +5,98 @@
 
 
 enum BuzzerState {
-    /// The default mode, nothing is being played.
+    /// The default stand by mode, nothing is being played.
     BUZZER_STATE_STANDBY,
 
     /// Song is being played.
     BUZZER_STATE_SONG,
 
-    /// Buzzer is playing a ticking sound.
-    BUZZER_STATE_TICKING,
+    /// Ticking sound is being played.
+    BUZZER_STATE_TICK,
 };
 
 class Buzzer {
 public:
-    // Buzzer powered
+    /// Buzzer state.
     BuzzerState state = BUZZER_STATE_STANDBY;
 
-    // Amount of ticks played in a row.
+    /// Amount of ticks played in a row.
     unsigned short tick_streak = 0;
 
-    Buzzer(unsigned short pin, Song song);
+    /// Amount of song being played in a row.
+    unsigned short song_streak = 0;
 
-    // Initialize buzzer.
-    void init_pin() const;
 
-    // Start repeatedly playing song.
-    void start_song();
+    explicit Buzzer(unsigned short pin);
 
-    // Gracefully finishes song (playing till the end);
-    void finish_song();
+    /// Initialize output pin for buzzer.
+    void initPin() const;
 
-    // Start ticking.
-    void start_ticking(int interval, int duration, int tone);
+    /// Start repeatedly playing song.
+    void startSong(Song *song);
 
-    // Finish ticking.
-    void finish_ticking();
+    /// Gracefully finishes song (playing till the end).
+    void finishSong();
 
-    void abort_song();
+    /// Start ticking.
+    void startTicking(int interval, int duration, int tone);
 
+    /// Finish ticking.
+    void finishTicking();
+
+    /// Abort playing song.
+    void abortSong();
+
+    /// General method to handle buzzer.
     void handle();
 
 
 private:
-    // Output pin number.
+    /// Output pin number.
     unsigned short pin;
 
-    // Song which buzzer will be able to play.
-    Song song;
+    /// Song which is being played by buzzer.
+    Song *song;
 
-    // Is true when buzzer is producing sound, false when buzzer is silent.
+    /// Is true when buzzer is producing sound, false when buzzer is silent.
     bool playing = false;
 
-    // Related to BUZZER_STATE_TICKING powered:
+    // Related to BUZZER_STATE_TICK state:
 
-    // Interval of tick in BUZZER_STATE_TICKING.
+    /// Interval of tick in BUZZER_STATE_TICKING.
     unsigned short tick_interval = 0;
 
-    // Duration of tick in BUZZER_STATE_TICKING.
+    /// Duration of tick in BUZZER_STATE_TICKING.
     unsigned short tick_duration = 0;
 
-    // Tone of tick in BUZZER_STATE_TICKING.
+    /// Tone of tick in BUZZER_STATE_TICKING.
     unsigned short tick_tone = 0;
 
-    // Timestamp when the current tick started.
+    /// Timestamp when the current tick started.
     unsigned long tick_start_ts = 0;
 
-    // Whether tick will be played next time or not.
+    /// Whether tick will be played next time or not.
     bool tick_play_next = false;
 
+    // Related to BUZZER_STATE_SONG state:
 
-    // Related to BUZZER_STATE_SONG powered:
-
-    // Whether song be played next time or not.
+    /// Whether song be played next time or not.
     bool song_play_next = false;
 
-    // Index of the current note in the song.
+    /// Index of the current note in the song.
     unsigned short song_note_index = 0;
 
-    // Timestamp when the current note started playing.
+    /// Timestamp when the current note started playing.
     unsigned long song_note_start_ts = 0;
 
-    // Handles song.
-    void handle_song();
+    /// Handles song.
+    void handleSong();
 
-    // Resets buzzer, interrupts song.
-//    void abort_song();
+    /// Handles ticking.
+    void handleTick();
 
-    // Handles ticking.
-    void handle_ticking();
-
-    // Resets from ticker to the standby powered.
-    void abort_ticking();
+    /// Resets from ticker to the standby powered.
+    void abortTick();
 };
 
 

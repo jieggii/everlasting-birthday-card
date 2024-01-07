@@ -2,30 +2,31 @@
 #include "Arduino.h"
 
 
-Buzzer::Buzzer(unsigned short pin, Song song) : song(song) {
+Buzzer::Buzzer(unsigned short pin) {
     this->pin = pin;
-    this->song = song;
+    this->song = nullptr;
 }
 
-void Buzzer::init_pin() const {
+void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
 }
 
-void Buzzer::start_ticking(int interval, int duration, int tone) {
+void Buzzer::startTicking(int interval, int duration, int tone) {
     this->tick_interval = interval;
     this->tick_duration = duration;
     this->tick_tone = tone;
 
     this->tick_play_next = true;
-    this->state = BUZZER_STATE_TICKING;
+    this->state = BUZZER_STATE_TICK;
 }
 
-void Buzzer::start_song() {
+void Buzzer::startSong(Song *song) {
+    this->song = song;
     this->song_play_next = true;
     this->state = BUZZER_STATE_SONG;
 }
 
-void Buzzer::handle_ticking() {
+void Buzzer::handleTick() {
     const unsigned long now = millis();
 
     if (!this->playing) {
@@ -47,9 +48,9 @@ void Buzzer::handle_ticking() {
     }
 }
 
-void Buzzer::handle_song() {
+void Buzzer::handleSong() {
     const unsigned long now = millis();
-    const Note current_note = this->song.notes[this->song_note_index];
+    const Note current_note = this->song->notes[this->song_note_index];
 
     if (!this->playing) {
         if (now >= this->song_note_start_ts) {
@@ -63,15 +64,15 @@ void Buzzer::handle_song() {
     unsigned int current_note_duration_ms;
     switch (current_note.duration) {
         case NOTE_DURATION_HALF:
-            current_note_duration_ms = this->song.half_duration;
+            current_note_duration_ms = this->song->half_duration;
             break;
 
         case NOTE_DURATION_QUARTER:
-            current_note_duration_ms = this->song.quarter_duration;
+            current_note_duration_ms = this->song->quarter_duration;
             break;
 
         case NOTE_DURATION_EIGHTH:
-            current_note_duration_ms = this->song.eighth_duration;
+            current_note_duration_ms = this->song->eighth_duration;
             break;
     }
 
@@ -82,14 +83,14 @@ void Buzzer::handle_song() {
         noTone(this->pin);
 
         // If the last note has been played already:
-        if (this->song_note_index > this->song.notes_count - 1) {
+        if (this->song_note_index > this->song->notes_count - 1) {
             if (this->song_play_next) {
                 this->song_note_index = 0;
             } else {
-                this->abort_song();
+                this->abortSong();
             }
         }
-        this->song_note_start_ts = now + this->song.note_gap;
+        this->song_note_start_ts = now + this->song->note_gap;
     }
 }
 
@@ -100,16 +101,16 @@ void Buzzer::handle() {
             return;
 
         case BUZZER_STATE_SONG:
-            this->handle_song();
+            this->handleSong();
             break;
 
-        case BUZZER_STATE_TICKING:
-            this->handle_ticking();
+        case BUZZER_STATE_TICK:
+            this->handleTick();
             break;
     }
 }
 
-void Buzzer::abort_ticking() {
+void Buzzer::abortTick() {
     this->state = BUZZER_STATE_STANDBY;
     this->playing = false;
 
@@ -121,7 +122,7 @@ void Buzzer::abort_ticking() {
     this->tick_start_ts = 0;
 }
 
-void Buzzer::abort_song() {
+void Buzzer::abortSong() {
     this->state = BUZZER_STATE_STANDBY;
     this->playing = false;
 
@@ -129,10 +130,10 @@ void Buzzer::abort_song() {
     this->song_note_start_ts = 0;
 }
 
-void Buzzer::finish_ticking() {
-    this->abort_ticking();
+void Buzzer::finishTicking() {
+    this->abortTick();
 }
 
-void Buzzer::finish_song() {
+void Buzzer::finishSong() {
     this->song_play_next = false;
 }

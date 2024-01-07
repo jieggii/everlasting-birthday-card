@@ -26,7 +26,7 @@ enum State {
     STATE_DEBUG_SETUP,
     STATE_DEBUG_LOOP,
 
-    /// State which checks month.
+    /// State in which Arduino checks current month.
     STATE_CHECK_MONTH,
 
     // Arduino is counting down until it begins celebrating.
@@ -60,7 +60,7 @@ Display LCD(LCD_ADDRESS, 16, 2);
 Microphone MICROPHONE(MICROPHONE_PIN);
 
 /// Buzzer which is used to play ticking sound and the song.
-Buzzer BUZZER(BUZZER_PIN, SONG);
+Buzzer BUZZER(BUZZER_PIN);
 
 /// Candle is a simple LED.
 Candle CANDLE(CANDLE_LED_PIN);
@@ -187,7 +187,7 @@ void check_month() {
 }
 
 void celebrate_countdown_setup() {
-    BUZZER.start_ticking(
+    BUZZER.startTicking(
             CELEBRATE_COUNTDOWN_TICK_INTERVAL,
             CELEBRATE_COUNTDOWN_TICK_DURATION,
             CELEBRATE_COUNTDOWN_TICK_TONE
@@ -200,7 +200,7 @@ void celebrate_countdown_setup() {
 void celebrate_countdown_loop() {
     BUZZER.handle();
     if (BUZZER.tick_streak == CELEBRATE_COUNTDOWN_TICK_COUNT) {
-        BUZZER.finish_ticking();
+        BUZZER.finishTicking();
 
         Serial.println("info: set state to CELEBRATE_SETUP");
         STATE = STATE_CELEBRATE_SETUP;
@@ -209,7 +209,7 @@ void celebrate_countdown_loop() {
 
 void celebrate_setup() {
     // setup hardware:
-    BUZZER.start_song();
+    BUZZER.startSong(&SONG);
     CANDLE.turn_on();
 
     LCD.backlight();
@@ -243,7 +243,7 @@ void celebrate_loop() {
         if (microphone_triggered) { // if microphone indicates that candle is blown now
             CANDLE.turn_off(); // turn off the candle
             LCD.finish_displaying(); // finish displaying the text
-            BUZZER.finish_song(); // finish playing the song
+            BUZZER.finishSong(); // finish playing the song
         }
     } else { // if candle has been blown
         if (BUZZER.state == BUZZER_STATE_STANDBY &&
@@ -298,7 +298,7 @@ void wish_loop() {
 
 void sleep_countdown_setup() {
     LCD.handle(); // continue displaying the current wish
-    BUZZER.start_ticking(
+    BUZZER.startTicking(
             SLEEP_COUNTDOWN_TICK_INTERVAL,
             SLEEP_COUNTDOWN_TICK_DURATION,
             SLEEP_COUNTDOWN_TICK_TONE
@@ -317,7 +317,7 @@ void sleep_countdown_loop() {
     }
 
     if (!LCD.displaying) { // if finished displaying the current wish
-        BUZZER.finish_ticking(); // stop making ticking sound
+        BUZZER.finishTicking(); // stop making ticking sound
 
         // disable the LCD:
         LCD.noBacklight();
@@ -338,7 +338,7 @@ void setup() {
     // Set up output pins:
     pinMode(FAILURE_LED_PIN, OUTPUT); // failure LED
     LCD.init(); // display
-    BUZZER.init_pin(); // buzzer pin
+    BUZZER.initPin(); // buzzer pin
     CANDLE.init_pin(); // candle LED pin
 
     // Disable LCD backlight:
