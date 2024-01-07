@@ -17,13 +17,13 @@ enum BuzzerState {
 
 class Buzzer {
 public:
-    /// Buzzer state.
-    BuzzerState state = BUZZER_STATE_STANDBY;
-
     explicit Buzzer(unsigned short pin);
 
     /// Initialize output pin for buzzer.
     void initPin() const;
+
+    /// Returns current state of the buzzer.
+    BuzzerState getState() const;
 
     /// Start repeatedly playing song.
     void startSong(Song *song, unsigned char count);
@@ -38,6 +38,9 @@ public:
 private:
     /// Output pin number.
     unsigned short pin;
+
+    /// Current buzzer state.
+    BuzzerState state = BUZZER_STATE_STANDBY;
 
     /// Is true when buzzer is producing sound, false when buzzer is silent.
     bool is_playing = false;

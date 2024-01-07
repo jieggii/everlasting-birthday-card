@@ -8,6 +8,10 @@ void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
 }
 
+BuzzerState Buzzer::getState() const {
+    return this->state;
+}
+
 void Buzzer::startTicking(int interval, int duration, int tone, unsigned char count) {
     this->tick_interval = interval;
     this->tick_duration = duration;
