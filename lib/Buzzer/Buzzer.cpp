@@ -23,7 +23,7 @@ void Buzzer::startTicking(int interval, int duration, int tone, unsigned char co
     this->state = BUZZER_STATE_TICK;
 }
 
-void Buzzer::startSong(Song *song, unsigned char count) {
+void Buzzer::startSong(const Song *song, unsigned char count) {
     this->song = song;
     this->song_count = count;
 

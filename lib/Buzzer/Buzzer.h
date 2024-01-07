@@ -26,7 +26,7 @@ public:
     BuzzerState getState() const;
 
     /// Start repeatedly playing song.
-    void startSong(Song *song, unsigned char count);
+    void startSong(const Song *song, unsigned char count);
 
     /// Start ticking.
     void startTicking(int interval, int duration, int tone, unsigned char count);
