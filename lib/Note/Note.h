@@ -20,16 +20,10 @@ enum NoteDuration {
     NOTE_DURATION_EIGHTH,
 };
 
-
-class Note {
-public:
+struct Note {
     unsigned short tone;
     NoteDuration duration;
-
-    Note(unsigned short tone, NoteDuration duration) {
-        this->duration = duration;
-        this->tone = tone;
-    };
 };
+
 
 #endif //EVERLASTING_BIRTHDAY_CARD_NOTE_H
