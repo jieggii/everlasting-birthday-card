@@ -6,15 +6,18 @@ class Microphone {
 public:
     explicit Microphone(unsigned short pin);
 
-    void init_pin() const;
+    /// Initialize microphone analog input pin.
+    void initPin() const;
 
-    bool is_triggered(unsigned short treshold, unsigned short target);
+    /// Returns true if the given `treshold` has been reached or exceeded `streak` times in a row.
+    bool isTriggered(unsigned short treshold, unsigned short streak);
 
 private:
+    /// Microphone analog data input pin.
     unsigned short pin;
-    unsigned short trigger_streak = 0;
 
-    int read() const;
+    /// Amount of triggers in a row.
+    unsigned short trigger_streak;
 };
 
 

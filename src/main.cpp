@@ -237,7 +237,7 @@ void celebrate_loop() {
     LCD.handle(); // continue displaying the text
 
     if (CANDLE.is_powered()) { // if candle is still turned on
-        bool microphone_triggered = MICROPHONE.is_triggered(
+        bool microphone_triggered = MICROPHONE.isTriggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
         );
         if (microphone_triggered) { // if microphone indicates that candle is blown now
@@ -332,7 +332,7 @@ void setup() {
 
     // Set up input pins:
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
-    MICROPHONE.init_pin(); // microphone pin
+    MICROPHONE.initPin(); // microphone pin
     pinMode(DEBUG_BUTTON_PIN, INPUT); // debug button pin
 
     // Set up output pins:
