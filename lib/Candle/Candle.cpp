@@ -1,11 +1,7 @@
 #include "Candle.h"
 #include "Arduino.h"
 
-
-Candle::Candle(unsigned short pin) {
-    this->pin = pin;
-    this->powered = false;
-}
+Candle::Candle(unsigned short pin) : pin(pin) {}
 
 void Candle::init_pin() const {
     pinMode(this->pin, OUTPUT);
@@ -21,5 +17,5 @@ void Candle::turn_off() {
 
 void Candle::update_state(bool new_state) {
     digitalWrite(this->pin, new_state ? HIGH : LOW);
-    this->powered = new_state;
+    this->is_powered = new_state;
 }

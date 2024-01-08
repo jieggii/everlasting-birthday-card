@@ -16,8 +16,8 @@ public:
     void turn_off();
 
     /// Returns true when LED is powered, false otherwise.
-    bool is_powered() const {
-        return this->powered;
+    bool getIsPowered() const {
+        return this->is_powered;
     }
 
 private:
@@ -25,7 +25,7 @@ private:
     unsigned short pin;
 
     /// Indicates whether the candle LED turned on or turned off.
-    bool powered;
+    bool is_powered = false;
 
     /// Sets new LED state, also updates `powered` variable.
     void update_state(bool new_state);
