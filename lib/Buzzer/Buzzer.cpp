@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 
-Buzzer::Buzzer(unsigned short pin) : pin(pin), song(nullptr) {}
+Buzzer::Buzzer(unsigned char pin) : pin(pin), song(nullptr) {}
 
 void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
@@ -10,6 +10,16 @@ void Buzzer::initPin() const {
 
 BuzzerState Buzzer::getState() const {
     return this->state;
+}
+
+void Buzzer::startSong(const Song *song, unsigned char count) {
+    this->song = song;
+    this->song_count = count;
+
+    this->song_note_index = 0;
+    this->song_streak = 0;
+
+    this->state = BuzzerState::PLAYING_SONG;
 }
 
 void Buzzer::startTicking(int interval, int duration, int tone, unsigned char count) {
@@ -20,20 +30,18 @@ void Buzzer::startTicking(int interval, int duration, int tone, unsigned char co
 
     this->tick_streak = 0;
 
-    this->state = BUZZER_STATE_TICK;
+    this->state = BuzzerState::PLAYING_TICK;
 }
 
-void Buzzer::startSong(const Song *song, unsigned char count) {
-    this->song = song;
-    this->song_count = count;
-
-    this->song_note_index = 0;
-    this->song_streak = 0;
-
-    this->state = BUZZER_STATE_SONG;
+void Buzzer::finishSong() {
+    this->song_count = this->song_streak;
 }
 
 void Buzzer::handleTick() {
+    if (this->state != BuzzerState::PLAYING_TICK) {
+        return;
+    }
+
     const unsigned long now = millis();
 
     if (!this->is_playing) {
@@ -59,12 +67,11 @@ void Buzzer::handleTick() {
     }
 }
 
-//void Buzzer::abortTick() {
-//    this->playing = false;
-//    this->state = BUZZER_STATE_STANDBY;
-//}
-
 void Buzzer::handleSong() {
+    if (this->state != BuzzerState::PLAYING_SONG) {
+        return;
+    }
+
     const unsigned long now = millis();
     const Note current_note = this->song->getNotes()[this->song_note_index];
 
@@ -114,17 +121,16 @@ void Buzzer::handleSong() {
     }
 }
 
-
 void Buzzer::handle() {
     switch (this->state) {
-        case BUZZER_STATE_STANDBY:
+        case BuzzerState::STANDBY:
             return;
 
-        case BUZZER_STATE_SONG:
+        case BuzzerState::PLAYING_SONG:
             this->handleSong();
             break;
 
-        case BUZZER_STATE_TICK:
+        case BuzzerState::PLAYING_TICK:
             this->handleTick();
             break;
     }
@@ -132,5 +138,5 @@ void Buzzer::handle() {
 
 void Buzzer::reset() {
     this->is_playing = false;
-    this->state = BUZZER_STATE_STANDBY;
+    this->state = BuzzerState::STANDBY;
 }

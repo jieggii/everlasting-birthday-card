@@ -14,19 +14,19 @@ public:
         this->bar_duration = (static_cast<float>(60) / bpm) * 3 * 1000;  // duration of a full note (the whole bar)
     };
 
-    const Note *getNotes() {
+    const Note *getNotes() const {
         return this->notes;
     }
 
-    unsigned short getNotesCount() {
+    unsigned short getNotesCount() const {
         return this->notes_count;
     }
 
-    unsigned char getNoteGap() {
+    unsigned char getNoteGap() const {
         return this->note_gap;
     }
 
-    float getBarDuration() {
+    float getBarDuration() const {
         return this->bar_duration;
     }
 

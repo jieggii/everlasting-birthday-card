@@ -1,13 +1,18 @@
-#ifndef EVERLASTING_BIRTHDAY_CARD_CANDLE_H
-#define EVERLASTING_BIRTHDAY_CARD_CANDLE_H
+#ifndef EVERLASTING_BIRTHDAY_CARD_LED_H
+#define EVERLASTING_BIRTHDAY_CARD_LED_H
 
 
-class Candle {
+class LED {
 public:
-    explicit Candle(unsigned short pin);
+    explicit LED(unsigned char pin);
 
     /// Set appropriate pin mode for the LED pin.
     void init_pin() const;
+
+    /// Returns true when LED is powered, false otherwise.
+    bool isPowered() const {
+        return this->is_powered;
+    }
 
     /// Turn turn_on the candle.
     void turn_on();
@@ -15,14 +20,10 @@ public:
     /// Turn turn_off the candle.
     void turn_off();
 
-    /// Returns true when LED is powered, false otherwise.
-    bool getIsPowered() const {
-        return this->is_powered;
-    }
 
 private:
     /// Pin number.
-    unsigned short pin;
+    unsigned char pin;
 
     /// Indicates whether the candle LED turned on or turned off.
     bool is_powered = false;
@@ -32,4 +33,4 @@ private:
 };
 
 
-#endif //EVERLASTING_BIRTHDAY_CARD_CANDLE_H
+#endif //EVERLASTING_BIRTHDAY_CARD_LED_H

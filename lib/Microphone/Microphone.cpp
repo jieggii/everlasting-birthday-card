@@ -2,8 +2,7 @@
 #include "Arduino.h"
 
 
-Microphone::Microphone(unsigned short pin) {
-    this->pin = pin;
+Microphone::Microphone(unsigned char pin) : pin(pin) {
     this->trigger_streak = 0;
 };
 

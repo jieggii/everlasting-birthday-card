@@ -2,7 +2,7 @@
 #define EVERLASTING_BIRTHDAY_CARD_NOTE_H
 
 // Note tones:
-// (source: https://pages.mtu.edu/~suits/notefreqs.html)
+// (https://pages.mtu.edu/~suits/notefreqs.html)
 
 const unsigned short TONE_A3 = 220;
 const unsigned short TONE_B3 = 247;

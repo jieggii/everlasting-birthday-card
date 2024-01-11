@@ -6,18 +6,18 @@
 
 enum BuzzerState {
     /// The default stand by mode, nothing is being played.
-    BUZZER_STATE_STANDBY,
+    STANDBY,
 
     /// Song is being played.
-    BUZZER_STATE_SONG,
+    PLAYING_SONG,
 
     /// Ticking sound is being played.
-    BUZZER_STATE_TICK,
+    PLAYING_TICK,
 };
 
 class Buzzer {
 public:
-    explicit Buzzer(unsigned short pin);
+    explicit Buzzer(unsigned char pin);
 
     /// Initialize output pin for buzzer.
     void initPin() const;
@@ -31,16 +31,19 @@ public:
     /// Start ticking.
     void startTicking(int interval, int duration, int tone, unsigned char count);
 
+    /// Gracefully finish playing song before song streak is reached.
+    void finishSong();
+
     /// General method to handle buzzer.
     void handle();
 
 
 private:
     /// Output pin number.
-    unsigned short pin;
+    unsigned char pin;
 
     /// Current buzzer state.
-    BuzzerState state = BUZZER_STATE_STANDBY;
+    BuzzerState state = STANDBY;
 
     /// Is true when buzzer is producing sound, false when buzzer is silent.
     bool is_playing = false;
@@ -67,7 +70,7 @@ private:
 
     // Related to BUZZER_STATE_SONG state:
     /// Song which is being played by buzzer.
-    Song *song;
+    Song const *song;
 
     /// Amount of times song must be played.
     unsigned short song_count = 0;

@@ -4,7 +4,7 @@
 
 class Microphone {
 public:
-    explicit Microphone(unsigned short pin);
+    explicit Microphone(unsigned char pin);
 
     /// Initialize microphone analog input pin.
     void initPin() const;
@@ -14,7 +14,7 @@ public:
 
 private:
     /// Microphone analog data input pin.
-    unsigned short pin;
+    unsigned char pin;
 
     /// Amount of triggers in a row.
     unsigned short trigger_streak;
