@@ -1,8 +1,6 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_PINOUT_H
 #define EVERLASTING_BIRTHDAY_CARD_PINOUT_H
 
-#include "Arduino.h"
-
 /// Candle LED pin:
 const unsigned char CANDLE_LED_PIN = 5;
 
@@ -21,6 +19,7 @@ const unsigned char WAKE_UP_INTERRUPT_PIN = 7;
 /// Debug button pin.
 const unsigned char DIAGNOSTIC_BUTTON_PIN = 8;
 
+/// I2C address of the 16x2 LCD.
 const uint8_t LCD_ADDRESS = 0x27;
 
 
