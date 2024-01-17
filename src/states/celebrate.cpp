@@ -8,18 +8,21 @@
 
 void celebrate_setup() {
     // Setup hardware:
-    BUZZER.beginSong(&SONG, SONG_REPEAT);
     CANDLE_LED.turnOn();
+    BUILTIN_LED.turnOn();
     LCD.backlight();
+    BUZZER.beginSong(&SONG, SONG_REPEAT);
 
     // Calculate person's age at the moment:
-    DateTime now = RTC.now();
-    const unsigned int age = now.year() - BIRTH_DATE.year();
+    const DateTime now = RTC.now();
+    const uint8_t age = now.year() - BIRTH_DATE.year();
 
-    // Display the text:
-    LCD.initScrolling("Test 123 123 123 123 123 123 123 123 123", 255);
+    char text[50]; // todo: calculate desired buffer size instead of setting it manually
+    snprintf_P(text, sizeof(text), CELEBRATE_TEXT_FORMAT, age);
 
-    Serial.println(F("info: jump to CELEBRATE_LOOP"));
+    // Scroll the text:
+    LCD.initScrolling(text, 10);
+
     ARDUINO_STATE = ArduinoState::CELEBRATE_LOOP;
 }
 
@@ -35,14 +38,13 @@ void celebrate_loop() {
         );
         if (microphone_triggered) { // if microphone indicates that candle is blown now
             CANDLE_LED.turnOff(); // turn off the candle
+            BUILTIN_LED.turnOff();
             LCD.finishScrolling(); // finish displaying the text
             BUZZER.finishSong(); // finish playing the song
         }
     } else { // if candle has been blown
         if (BUZZER.getState() == BuzzerState::STANDBY &&
             !LCD.isScrolling()) { // if song has already stopped playing and LCD finished displaying the text
-
-            Serial.println(F("info: jump to WISH_SETUP"));
             ARDUINO_STATE = WISH_SETUP;
         }
     }
