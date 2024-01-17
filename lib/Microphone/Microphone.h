@@ -1,6 +1,8 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_MICROPHONE_H
 #define EVERLASTING_BIRTHDAY_CARD_MICROPHONE_H
 
+#include "stdint.h"
+
 
 class Microphone {
 public:
@@ -10,14 +12,14 @@ public:
     void initPin() const;
 
     /// Returns true if the given `treshold` has been reached or exceeded `streak` times in a row.
-    bool isTriggered(unsigned short treshold, unsigned short streak);
+    bool isTriggered(unsigned short treshold, uint8_t streak);
 
 private:
     /// Microphone analog data input pin.
     unsigned char pin;
 
     /// Amount of triggers in a row.
-    unsigned short trigger_streak;
+    uint8_t trigger_streak;
 };
 
 

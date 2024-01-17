@@ -3,13 +3,17 @@
 
 /// All states of the birthday card.
 enum ArduinoState {
-    // Sleep states: Arduino is waiting for the birthday date (DS3231 alarm interrupt) in the power down mode.
-    SLEEP_SETUP,
-    SLEEP_LOOP,
-
     // Diagnostic state: Arduino is testing all hardware and displaying diagnostic information using LCD.
     DIAGNOSTIC_SETUP,
     DIAGNOSTIC_LOOP,
+
+    // Home states: Arduino is displaying time left for the birthday date.
+    HOME_SETUP,
+    HOME_LOOP,
+
+    // Sleep states: Arduino is waiting for the birthday date (DS3231 alarm interrupt) in the power down mode.
+    SLEEP_SETUP,
+    SLEEP_LOOP,
 
     // Countdown state: Arduino is counting down until it begins celebrating.
     COUNTDOWN_SETUP,

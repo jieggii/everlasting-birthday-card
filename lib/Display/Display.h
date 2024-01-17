@@ -3,50 +3,54 @@
 
 #include "LiquidCrystal_I2C.h"
 
+const char ERROR_LITERAL[] PROGMEM = "ERROR:";
+const char INFO_LITERAL[] PROGMEM = "INFO:";
+
+
 class Display : public LiquidCrystal_I2C {
 public:
-    /// Is true when displaying text, false when not.
-    bool displaying = false;
-
-
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
 
-    void start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration);
+    void display(const char *text, uint8_t shift);
 
-    void finish_displaying();
+    void displayRows(const char *row1, const char *row2);
 
-    void handle();
+    void displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2);
+
+    void displayRows_P(const char *row1, const char *row2);
+
+    void displayError_P(const char *message);
+
+    void displayInfo_P(const char *message);
+
+    void initScrolling(const char *text, uint8_t count);
+
+    void handleScrolling(unsigned short first_frame_duration, unsigned short frame_duration);
+
+    /// Gracefully finishes scrolling text before target count is reached. todo
+    void finishScrolling();
+
+    /// Returns true when text is being scrolled, false when it is not.
+    bool isScrolling() const;
 
 private:
-    /// Indicates whether text will be displayed one more time or not.
-    bool display_next_time = false;
+    /// Is true when scrolling text, false when not.
+    bool is_scrolling = false;
 
-    /// Is true when we are at the first frame.
-    bool current_frame_is_first = false;
+    /// Text which will be scrolled.
+    const char *scrolling_text = nullptr;
 
-    /// Long text which will be displayed and scrolled turn_on the LCD screen.
-    String text;
+    /// Length of the text being scrolled.
+    unsigned short scrolling_text_length = 0;
 
-    /// Length of the text being displayed.
-    unsigned int text_length;
+    /// Target count of scrolling. todo
+    unsigned char scrolling_count = 0;
 
-    /// Duration of a text frame being displayed while scrolling.
-    short frame_duration;
+    /// Current number of times text has been scrolled.
+    unsigned char scrolling_streak = 0;
 
-    /// Duration of a first text frame being displayed while scrolling.
-    short first_frame_duration;
-
-    /// Duration of the previous frame.
-    unsigned short previous_frame_duration;
-
-    /// Timestamp when the current frame was displayed.
-    unsigned long frame_displayed_ts = 0;
-
-    /// Index of the frame beginning in the text.
     unsigned short frame_start = 0;
-
-    /// Frame length
-    const unsigned short frame_length = 16;
+    unsigned long next_frame_start_ts = 0;
 };
 
 #endif //EVERLASTING_BIRTHDAY_CARD_DISPLAY_H

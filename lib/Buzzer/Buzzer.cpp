@@ -8,11 +8,19 @@ void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
 }
 
+void Buzzer::tone(unsigned int frequency) const {
+    ::tone(this->pin, frequency);
+}
+
+void Buzzer::noTone() const {
+    ::noTone(this->pin);
+}
+
 BuzzerState Buzzer::getState() const {
     return this->state;
 }
 
-void Buzzer::startSong(const Song *song, unsigned char count) {
+void Buzzer::beginSong(const Song *song, unsigned char count) {
     this->song = song;
     this->song_count = count;
 
@@ -22,7 +30,7 @@ void Buzzer::startSong(const Song *song, unsigned char count) {
     this->state = BuzzerState::PLAYING_SONG;
 }
 
-void Buzzer::startTicking(int interval, int duration, int tone, unsigned char count) {
+void Buzzer::beginTicking(int interval, int duration, int tone, unsigned char count) {
     this->tick_interval = interval;
     this->tick_duration = duration;
     this->tick_tone = tone;
@@ -34,7 +42,7 @@ void Buzzer::startTicking(int interval, int duration, int tone, unsigned char co
 }
 
 void Buzzer::finishSong() {
-    this->song_count = this->song_streak;
+    this->song_count = 0;
 }
 
 void Buzzer::handleTick() {
@@ -46,23 +54,22 @@ void Buzzer::handleTick() {
 
     if (!this->is_playing) {
         if (now >= this->tick_start_ts) {
-//            this->tick_start_ts = now; todo: try toggling this line
-            tone(this->pin, this->tick_tone);
+            this->tick_start_ts = now;
+            this->tone(this->tick_tone);
             this->is_playing = true;
         }
         return;
     }
 
     if (now - this->tick_start_ts >= this->tick_duration) {
-        noTone(this->pin);
+        this->noTone();
         this->is_playing = false;
         this->tick_streak++;
 
-        if (this->tick_streak >= this->tick_count) { // check if desired amount of ticks has been reached
+        if (this->tick_streak == this->tick_count) { // check if desired amount of ticks has been reached
             this->reset();
             return;
         }
-
         this->tick_start_ts = now + this->tick_interval;
     }
 }
@@ -77,43 +84,42 @@ void Buzzer::handleSong() {
 
     if (!this->is_playing) {
         if (now >= this->song_note_start_ts) {
-//            this->song_note_start_ts = now; todo: try toggling this line of code
-            tone(this->pin, current_note.tone);
+            this->song_note_start_ts = now;
+            this->tone(current_note.tone);
             this->is_playing = true;
         }
         return;
     }
 
     // Calculate appropriate note duration in ms:
-    // todo: maybe store durations.
     unsigned short current_note_duration_ms;
     switch (current_note.duration) {
         case NOTE_DURATION_HALF:
-            current_note_duration_ms = static_cast<unsigned short>(this->song->getBarDuration() / 2);
+            current_note_duration_ms = this->song->getHalfDuration();
             break;
 
         case NOTE_DURATION_QUARTER:
-            current_note_duration_ms = static_cast<unsigned short>(this->song->getBarDuration() / 4);
+            current_note_duration_ms = this->song->getQuarterDuration();
             break;
 
         case NOTE_DURATION_EIGHTH:
-            current_note_duration_ms = static_cast<unsigned short>(this->song->getBarDuration() / 8);
+            current_note_duration_ms = this->song->getEighthDuration();
             break;
     }
 
     // If it is time to play next note:
     if (now - this->song_note_start_ts >= current_note_duration_ms) {
-        noTone(this->pin);
+        this->noTone();
         this->is_playing = false;
 
         if (this->song_note_index == this->song->getNotesCount() - 1) { // if the note stopped playing was the last one
             this->song_streak++;
-            if (this->song_streak == this->song_count) { // if song has played desired amount of times
+            if (this->song_streak >= this->song_count) { // if song has played desired amount of times
+                // (>= is used instead of == because finishSong sets song_count to 0)
                 this->reset();
                 return;
             }
             this->song_note_index = 0; // reset note index to 0 in order to play song again
-
         } else {
             this->song_note_index++;
         }

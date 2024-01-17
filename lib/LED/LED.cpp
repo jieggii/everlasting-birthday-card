@@ -3,15 +3,15 @@
 
 LED::LED(unsigned char pin) : pin(pin) {}
 
-void LED::init_pin() const {
+void LED::initPin() const {
     pinMode(this->pin, OUTPUT);
 }
 
-void LED::turn_on() {
+void LED::turnOn() {
     this->update_state(true);
 }
 
-void LED::turn_off() {
+void LED::turnOff() {
     this->update_state(false);
 }
 

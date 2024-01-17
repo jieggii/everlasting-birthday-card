@@ -1,0 +1,8 @@
+#ifndef EVERLASTING_BIRTHDAY_CARD_HOME_H
+#define EVERLASTING_BIRTHDAY_CARD_HOME_H
+
+void home_setup();
+
+void home_loop();
+
+#endif //EVERLASTING_BIRTHDAY_CARD_HOME_H

@@ -5,30 +5,20 @@
 
 class Song {
 public:
-    Song(const Note *notes, unsigned short notes_count, unsigned char note_gap, unsigned short bpm) {
-        this->notes = notes;
-        this->notes_count = notes_count;
-        this->note_gap = note_gap;
+    Song(const Note *notes, unsigned short notes_count, unsigned char note_gap, unsigned short bpm);
 
-        // Precalculate bar duration:
-        this->bar_duration = (static_cast<float>(60) / bpm) * 3 * 1000;  // duration of a full note (the whole bar)
-    };
+    const Note *getNotes() const;
 
-    const Note *getNotes() const {
-        return this->notes;
-    }
+    unsigned short getNotesCount() const;
 
-    unsigned short getNotesCount() const {
-        return this->notes_count;
-    }
+    unsigned char getNoteGap() const;
 
-    unsigned char getNoteGap() const {
-        return this->note_gap;
-    }
+    unsigned short getHalfDuration() const;
 
-    float getBarDuration() const {
-        return this->bar_duration;
-    }
+    unsigned short getQuarterDuration() const;
+
+    unsigned short getEighthDuration() const;
+
 
 private:
     /// Array of song notes.
@@ -40,9 +30,14 @@ private:
     /// Time gap between notes in ms (to avoid legato).
     unsigned char note_gap;
 
-    /// Duration of one bar.
-    float bar_duration;
-};
+    /// Duration of a half note in ms.
+    unsigned short half_duration;
 
+    /// Duration of a quarter note in ms.
+    unsigned short quarter_duration;
+
+    /// Duration of an eighth note in ms.
+    unsigned short eighth_duration;
+};
 
 #endif //EVERLASTING_BIRTHDAY_CARD_SONG_H

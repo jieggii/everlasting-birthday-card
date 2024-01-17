@@ -2,19 +2,19 @@
 #include "EEPROM.h"
 
 #include "pinout.h"
-
 #include "settings.h"
+#include "literals.h"
 
 #include "globals/hardware.h"
 #include "globals/state.h"
 
-#include "states/sleep.h"
 #include "states/diagnostic.h"
+#include "states/home.h"
+#include "states/sleep.h"
 #include "states/countdown.h"
 #include "states/celebrate.h"
 #include "states/wish.h"
 #include "states/goodbye.h"
-
 
 void setup() {
     Serial.begin(9600);
@@ -25,30 +25,47 @@ void setup() {
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
 
     // Setup outputs:
-    CANDLE_LED.init_pin(); // candle LED pin
-    FAILURE_LED.init_pin(); // failure LED pin
-    BUILTIN_LED.init_pin(); // builtin LED pin
-    BUZZER.initPin(); // buzzer pin
+    CANDLE_LED.initPin();  // candle LED pin
+    FAILURE_LED.initPin(); // failure LED pin
+    BUILTIN_LED.initPin(); // builtin LED pin
+    BUZZER.initPin();      // buzzer pin
 
-    LCD.init(); // display
-    LCD.noBacklight(); // disable LCD backlight
+    LCD.init();        // initialize display
+    LCD.clear();       // clear display
+    LCD.noBacklight(); // disable display backlight
 
-    // Boot delay:
-    BUILTIN_LED.turn_on();
-    delay(BOOT_DELAY);
-    BUILTIN_LED.turn_off();
-
-    // Initialize RTC:
+    // Initialize RTC module:
     if (!RTC.begin()) {
-        Serial.println("err: no RTC found");
-        FAILURE_LED.turn_on();
+        FAILURE_LED.turnOn();
+
+        LCD.backlight();
+        LCD.displayError_P(ERROR_RTC_NOT_FOUND);
+
         while (true);
     }
 
-    // Set current date and time if DS3231 stopped due to power loss:
+    // Reset date and time to the firmware compilation date and time if needed:
+    if (RTC_RESET) {
+        const DateTime compilation_time = DateTime(F(__DATE__), F(__TIME__));
+        RTC.adjust(compilation_time);
+        Serial.println(F("warn: adjusted RTC datetime"));
+
+        LCD.backlight();
+        LCD.displayRows(F("DEBUG:"), F("RTC adjusted"));
+
+        /// after flashing firmware with RTC_RESET set to true and adjusting the datetime
+        /// you need to rebuild and flash the firmware with RTC_RESET flag set to false.
+        while (true);
+    }
+
+    // Check if DS3231 stopped due to power loss:
     if (RTC.lostPower()) {
-        RTC.adjust(DateTime(F(__DATE__), F(__TIME__)));
-        Serial.println(F("warn: RTC date has been updated"));
+        FAILURE_LED.turnOn();
+
+        LCD.backlight();
+        LCD.displayError_P(ERROR_RTC_LOST_POWER);
+
+        while (true);
     }
 
     RTC.disable32K(); // disable 32K pin as it is not needed
@@ -60,20 +77,13 @@ void setup() {
 
     RTC.disableAlarm(2); // disable alarm 2 as only alarm 1 will be used
 
-    // Set up an alarm
-    DateTime alarmDate(
-            2000, // year does not make any sense for the DS3231_A1_Date alarm mode, so let it be 2000 (the default one)
-            5, // month does not make any sense for the DS3231_A1_Date alarm mode
-            BIRTH_DAY,
-            BIRTH_HOUR,
-            BIRTH_MINUTE,
-            BIRTH_SECOND
-    );
+    // Set an alarm for the birthday date:
+    if (!RTC.setAlarm1(BIRTH_DATE, DS3231_A1_Date)) {
+        FAILURE_LED.turnOn();
 
-    bool success = RTC.setAlarm1(alarmDate, DS3231_A1_Date);
-    if (!success) {
-        FAILURE_LED.turn_on();
-        Serial.println(F("err: failed to set a new alarm"));
+        LCD.backlight();
+        LCD.displayError_P(ERROR_RTC_SET_ALARM_FAILED);
+
         while (true);
     }
 
@@ -83,30 +93,38 @@ void setup() {
     }
 
     if (DIAGNOSTIC_BUTTON.isPressed()) { // if diagnostic button is pressed
-        Serial.println(F("info: jump to DIAGNOSTIC_SETUP"));
+//        Serial.println(F("info: jump to DIAGNOSTIC_SETUP"));
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
-        Serial.println(F("info: jump to SLEEP_SETUP"));
-        ARDUINO_STATE = ArduinoState::SLEEP_SETUP;
+//        Serial.println(F("info: jump to HOME_SETUP"));
+        ARDUINO_STATE = ArduinoState::HOME_SETUP;
     }
 }
 
 void loop() {
     switch (ARDUINO_STATE) {
-        // Sleep states:
-        case ArduinoState::SLEEP_SETUP:
-            sleep_setup();
-            break;
-        case ArduinoState::SLEEP_LOOP:
-            sleep_loop();
-            break;
-
-            // Debug states:
+        // Diagnostic states:
         case ArduinoState::DIAGNOSTIC_SETUP:
             diagnostic_setup();
             break;
         case ArduinoState::DIAGNOSTIC_LOOP:
             diagnostic_loop();
+            break;
+
+        case ArduinoState::HOME_SETUP:
+            home_setup();
+            break;
+
+        case ArduinoState::HOME_LOOP:
+            home_loop();
+            break;
+
+            // Sleep states:
+        case ArduinoState::SLEEP_SETUP:
+            sleep_setup();
+            break;
+        case ArduinoState::SLEEP_LOOP:
+            sleep_loop();
             break;
 
             // Countdown states:

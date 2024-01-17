@@ -7,18 +7,18 @@ public:
     explicit LED(unsigned char pin);
 
     /// Set appropriate pin mode for the LED pin.
-    void init_pin() const;
+    void initPin() const;
 
     /// Returns true when LED is powered, false otherwise.
     bool isPowered() const {
         return this->is_powered;
     }
 
-    /// Turn turn_on the candle.
-    void turn_on();
+    /// Turn turnOn the candle.
+    void turnOn();
 
-    /// Turn turn_off the candle.
-    void turn_off();
+    /// Turn turnOff the candle.
+    void turnOff();
 
 
 private:

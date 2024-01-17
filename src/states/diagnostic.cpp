@@ -2,6 +2,7 @@
 
 #include "pinout.h"
 #include "settings.h"
+#include "literals.h"
 
 #include "globals/state.h"
 #include "globals/hardware.h"
@@ -10,50 +11,66 @@
 
 
 void diagnostic_setup() {
-    CANDLE_LED.turn_on(); // turn on the candle to test it
-    FAILURE_LED.turn_on(); // turn on the failure pin to test it
-    tone(BUZZER_PIN, 443); // make some noise using buzzer to test it
-
-    delay(100);
-
-    CANDLE_LED.turn_off();
-    FAILURE_LED.turn_off();
-    noTone(BUZZER_PIN);
-
+    LCD.clear(); // clear the screen
     LCD.backlight(); // enable screen backlight
+
+
+    CANDLE_LED.turnOn(); // turn on the candle to test it
+    FAILURE_LED.turnOn(); // turn on the failure pin to test it
+    BUZZER.tone(220); // make some noise using buzzer to test it
+
+    delay(150);
+
+    CANDLE_LED.turnOff();
+    FAILURE_LED.turnOff();
+    BUZZER.noTone();
 
     Serial.println(F("info: jump to DIAGNOSTIC_LOOP"));
     ARDUINO_STATE = DIAGNOSTIC_LOOP;
 }
 
 void diagnostic_loop() {
-    // todo: use PROGMEM
-    DateTime now = RTC.now();
-    DateTime alarm = RTC.getAlarm1();
+    const DateTime now = RTC.now(); // current datetime
+    const DateTime alarm = RTC.getAlarm1(); // alarm datetime
+    const DateTime birthday = BIRTH_DATE.nextBirthday(now); // next birthday datetime
 
-    LCD.clear();
-    LCD.print(
-            String(now.month()) + "." +
-            String(now.day()) + "." +
-            String(now.year() - 2000) + " " +
-            String(now.hour()) + ":" +
-            String(now.minute()) + ":" +
-            String(now.second())
+    // buffers holding information that will be displayed on the LCD:
+    char row1_buffer[16 + 1];
+    char row2_buffer[16 + 1];
+
+    // screen 1 (current datetime + wish index):
+    snprintf_P(
+            row1_buffer, sizeof(row1_buffer), DATE_FORMAT,
+            now.day(),
+            now.month(),
+            now.year() - 2000,
+            now.hour(),
+            now.minute(),
+            now.second()
     );
-
-    LCD.setCursor(0, 1);
-    LCD.print(
-            "xx." + String(alarm.day()) +
-            ".xx " + String(alarm.hour()) +
-            ":" + String(alarm.minute()) +
-            ":" + String(alarm.second())
-    );
-
-
-    delay(5000);
-
+    sprintf(row2_buffer, "Wish index: %d", EEPROM.read(WISH_INDEX_EEPROM_ADDRESS));
+    LCD.displayRows(row1_buffer, row2_buffer);
+    delay(1500);
     LCD.clear();
-    LCD.print("Next wish: #" + String(EEPROM.read(WISH_INDEX_EEPROM_ADDRESS)));
 
-    delay(1000);
+    // screen 2 (next birthday datetime + alarm datetime):
+    snprintf_P(
+            row1_buffer, sizeof(row1_buffer), DATE_FORMAT,
+            birthday.day(),
+            birthday.month(),
+            birthday.year() - 2000,
+            birthday.hour(),
+            birthday.minute(),
+            birthday.second()
+    );
+    snprintf(
+            row2_buffer, sizeof(row2_buffer), "%d.x.x %d:%d:%d",
+            alarm.day(),
+            alarm.hour(),
+            alarm.minute(),
+            alarm.second()
+    );
+    LCD.displayRows(row1_buffer, row2_buffer);
+    delay(1500);
+    LCD.clear();
 }

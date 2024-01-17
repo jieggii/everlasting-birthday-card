@@ -6,7 +6,7 @@
 #include "countdown.h"
 
 void countdown_setup() {
-    BUZZER.startTicking(
+    BUZZER.beginTicking(
             COUNTDOWN_TICK_INTERVAL,
             COUNTDOWN_TICK_DURATION,
             COUNTDOWN_TICK_TONE,

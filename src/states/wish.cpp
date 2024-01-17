@@ -41,7 +41,7 @@ void wish_setup() {
 }
 
 void wish_loop() {
-    LCD.handle(); // continue displaying the current wish
+//    LCD.handle(); // continue displaying the current wish
 //    if (millis() - WISH_START_TS >= WISH_DURATION) { // if wish duration has expired
 //        Serial.println("info: set state to SLEEP_COUNTDOWN_SETUP");
 //        STATE = STATE_SLEEP_COUNTDOWN_SETUP;

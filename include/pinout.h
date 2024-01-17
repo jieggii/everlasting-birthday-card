@@ -21,7 +21,7 @@ const unsigned char WAKE_UP_INTERRUPT_PIN = 7;
 /// Debug button pin.
 const unsigned char DIAGNOSTIC_BUTTON_PIN = 8;
 
-/// 16x2 LCD I2C address:
-const unsigned char LCD_ADDRESS = 0x27;
+const uint8_t LCD_ADDRESS = 0x27;
+
 
 #endif //EVERLASTING_BIRTHDAY_CARD_PINOUT_H

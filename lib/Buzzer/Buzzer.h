@@ -22,14 +22,20 @@ public:
     /// Initialize output pin for buzzer.
     void initPin() const;
 
+    /// Call `tone` function from Arduino stdlib over the buzzer pin.
+    void tone(unsigned int frequency) const;
+
+    /// Cal `noTone` function from Arduino stdlib over the buzzer pin.
+    void noTone() const;
+
     /// Returns current state of the buzzer.
     BuzzerState getState() const;
 
     /// Start repeatedly playing song.
-    void startSong(const Song *song, unsigned char count);
+    void beginSong(const Song *song, unsigned char count);
 
     /// Start ticking.
-    void startTicking(int interval, int duration, int tone, unsigned char count);
+    void beginTicking(int interval, int duration, int tone, unsigned char count);
 
     /// Gracefully finish playing song before song streak is reached.
     void finishSong();

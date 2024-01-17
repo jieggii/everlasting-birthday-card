@@ -5,64 +5,117 @@ Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
         LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows) {
 }
 
-void Display::start_displaying(String &text, String &caption, short first_frame_duration, short frame_duration) {
-    this->text = text;
-    for (unsigned short i = 0; i < this->frame_length; i++) {
-        this->text = text + " ";
+/// Displays text of max length 32 using first and second row of the LCD.
+void Display::display(const char *text, uint8_t shift = 0) {
+    char row1_buffer[16 + 1];
+    char row2_buffer[16 + 1];
+
+    bool met_terminator = false;
+    for (unsigned short i = 0; i < 32; i++) {
+        if (text[i + shift] == '\0') {
+            met_terminator = true;
+        }
+
+        char symbol;
+        if (met_terminator) {
+            symbol = ' ';
+        } else {
+            symbol = text[i + shift];
+        }
+
+        if (i < 16) {
+            row1_buffer[i] = symbol;
+        } else {
+            row2_buffer[i - 16] = symbol;
+        }
     }
-    this->frame_start = 0;
-    this->current_frame_is_first = true;
 
-    this->first_frame_duration = first_frame_duration;
-    this->frame_duration = frame_duration;
-    this->previous_frame_duration = first_frame_duration;
+    row1_buffer[16] = '\0';
+    row2_buffer[16] = '\0';
 
-    this->displaying = true;
-    this->display_next_time = true;
-    this->text_length = text.length();
+    this->displayRows(row1_buffer, row2_buffer);
+}
+
+void Display::displayRows(const char *row1, const char *row2) {
+    this->setCursor(0, 0);
+    this->print(row1);
 
     this->setCursor(0, 1);
-    this->print(caption);
+    this->print(row2);
 }
 
-void Display::finish_displaying() {
-    display_next_time = false;
+void Display::displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2) {
+    this->setCursor(0, 0);
+    this->print(row1);
+
+    this->setCursor(0, 1);
+    this->print(row2);
 }
 
-void Display::handle() {
-    if (!this->displaying) {
+void Display::displayRows_P(const char *row1, const char *row2) {
+    char row1_buffer[strlen_P(row1) + 1];
+    char row2_buffer[strlen_P(row2) + 1];
+
+    strcpy_P(row1_buffer, row1);
+    strcpy_P(row2_buffer, row2);
+    this->displayRows(row1_buffer, row2_buffer);
+}
+
+void Display::displayError_P(const char *message) {
+    this->displayRows_P(ERROR_LITERAL, message);
+}
+
+void Display::displayInfo_P(const char *message) {
+    this->displayRows(INFO_LITERAL, message);
+}
+
+void Display::initScrolling(const char *text, uint8_t count) {
+    this->scrolling_text = text;
+    this->scrolling_count = count;
+
+    this->scrolling_text_length = strlen(text);
+
+    this->is_scrolling = true;
+    this->next_frame_start_ts = millis();
+}
+
+void Display::finishScrolling() {
+    this->scrolling_count = 0;
+}
+
+bool Display::isScrolling() const {
+    return this->is_scrolling;
+}
+
+void Display::handleScrolling(unsigned short first_frame_duration, unsigned short frame_duration) {
+    if (!this->isScrolling()) {
         return;
     }
-
     unsigned long now = millis();
 
-    if ((this->current_frame_is_first) || (now - this->frame_displayed_ts >= this->previous_frame_duration)) {
-        // Stop displaying text and clear the screen if the text should not be displayed anymore:
-        if (this->current_frame_is_first && !this->display_next_time) {
-            this->clear();
-            this->displaying = false;
-            return;
-        }
-
-        unsigned short frame_end = this->frame_start + this->frame_length;
-
-        this->setCursor(0, 0);
-        this->print(
-                this->text.substring(this->frame_start, frame_end)
-        );
-        this->frame_displayed_ts = now;
-        this->frame_start++;
-
-        if (this->current_frame_is_first) {
-            this->current_frame_is_first = false;
-            this->previous_frame_duration = this->first_frame_duration;
+    if (now >= this->next_frame_start_ts) {
+        if (this->frame_start == 0) {
+            this->next_frame_start_ts = now + first_frame_duration;
         } else {
-            this->previous_frame_duration = this->frame_duration;
+            this->next_frame_start_ts = now + frame_duration;
         }
 
-        if (this->frame_start == this->text_length + 1) {
+        this->clear(); // todo: try toggling (when wish is displaying)
+        this->display(this->scrolling_text, this->frame_start);
+
+        if (this->frame_start == this->scrolling_text_length) {
             this->frame_start = 0;
-            this->current_frame_is_first = true;
+            this->scrolling_streak++;
+            if (this->scrolling_streak >= this->scrolling_count) {
+                this->is_scrolling = false;
+            }
+        } else {
+            this->frame_start++;
         }
     }
 }
+
+
+
+
+
