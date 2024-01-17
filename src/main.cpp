@@ -48,10 +48,9 @@ void setup() {
     if (RTC_RESET) {
         const DateTime compilation_time = DateTime(F(__DATE__), F(__TIME__));
         RTC.adjust(compilation_time);
-        Serial.println(F("warn: adjusted RTC datetime"));
 
         LCD.backlight();
-        LCD.displayRows(F("DEBUG:"), F("RTC adjusted"));
+        LCD.displayInfo_P(INFO_RTC_ADJUSTED);
 
         /// after flashing firmware with RTC_RESET set to true and adjusting the datetime
         /// you need to rebuild and flash the firmware with RTC_RESET flag set to false.
@@ -97,7 +96,7 @@ void setup() {
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
 //        Serial.println(F("info: jump to HOME_SETUP"));
-        ARDUINO_STATE = ArduinoState::HOME_SETUP;
+        ARDUINO_STATE = ArduinoState::CELEBRATE_SETUP;
     }
 }
 

@@ -8,6 +8,8 @@ const char ERROR_RTC_LOST_POWER[] PROGMEM = "RTC lost power";
 const char ERROR_RTC_NOT_FOUND[] PROGMEM = "RTC not found";
 const char ERROR_RTC_SET_ALARM_FAILED[] PROGMEM = "set alarm failed";
 
+const char INFO_RTC_ADJUSTED[] PROGMEM = "RTC adjusted";
+
 // Other literals:
 
 const char DATE_FORMAT[] PROGMEM = "%d.%d.%d %d:%d:%d";
