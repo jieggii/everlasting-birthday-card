@@ -1,0 +1,21 @@
+1. I2C LCD:
+    SDA -> SDA (2)
+    SCL -> SCL (3)
+
+2. I2C DS3231 RTC:
+    SDA -> SDA (2)
+    SCL -> SCL (3)
+    SQW -> 7
+    32K -> - (not used)
+
+3. buzzer: 4 (through 200 Ohm resistor)
+
+4. candle LED: 5 (through 320 Ohm resistor)
+
+5. failure LED: 9 (through 320 Ohm resistor)
+
+6. diagnostics button: 8
+
+7. audio sensor:
+    data -> A1
+
