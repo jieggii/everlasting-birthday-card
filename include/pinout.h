@@ -1,6 +1,8 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_PINOUT_H
 #define EVERLASTING_BIRTHDAY_CARD_PINOUT_H
 
+#include "pins_arduino.h"
+
 /// Candle LED pin:
 const unsigned char CANDLE_LED_PIN = 5;
 
