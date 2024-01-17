@@ -7,8 +7,8 @@ Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
 
 /// Displays text of max length 32 using first and second row of the LCD.
 void Display::display(const char *text, uint8_t shift = 0) {
-    char row1_buffer[16 + 1];
-    char row2_buffer[16 + 1];
+    char row1_buffer[DISPLAY_COLS + 1];
+    char row2_buffer[DISPLAY_COLS + 1];
 
     bool met_terminator = false;
     for (unsigned short i = 0; i < 32; i++) {
@@ -23,15 +23,15 @@ void Display::display(const char *text, uint8_t shift = 0) {
             symbol = text[i + shift];
         }
 
-        if (i < 16) {
+        if (i < DISPLAY_COLS) {
             row1_buffer[i] = symbol;
         } else {
-            row2_buffer[i - 16] = symbol;
+            row2_buffer[i - DISPLAY_COLS] = symbol;
         }
     }
 
-    row1_buffer[16] = '\0';
-    row2_buffer[16] = '\0';
+    row1_buffer[DISPLAY_COLS] = '\0';
+    row2_buffer[DISPLAY_COLS] = '\0';
 
     this->displayRows(row1_buffer, row2_buffer);
 }

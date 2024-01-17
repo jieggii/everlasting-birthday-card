@@ -3,6 +3,9 @@
 
 #include "LiquidCrystal_I2C.h"
 
+const uint8_t DISPLAY_ROWS = 2;
+const uint8_t DISPLAY_COLS = 16;
+
 const char ERROR_LITERAL[] PROGMEM = "ERROR:";
 const char INFO_LITERAL[] PROGMEM = "INFO:";
 
