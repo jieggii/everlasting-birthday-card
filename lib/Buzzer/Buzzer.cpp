@@ -9,7 +9,7 @@ void Buzzer::initPin() const {
 }
 
 void Buzzer::tone(unsigned int frequency) const {
-    ::tone(this->pin, frequency);
+//    ::tone(this->pin, frequency);
 }
 
 void Buzzer::noTone() const {

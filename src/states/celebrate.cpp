@@ -17,32 +17,31 @@ void celebrate_setup() {
     const DateTime now = RTC.now();
     const uint8_t age = now.year() - BIRTH_DATE.year();
 
-    char text[50]; // todo: calculate desired buffer size instead of setting it manually
-    snprintf_P(text, sizeof(text), CELEBRATE_TEXT_FORMAT, age);
-
-    // Scroll the text:
-    LCD.initScrolling(text, 10);
+    // Initialize scrolling of the congratulation text:
+    char buffer[sizeof(CONGRATULATION)]; // note about buffer size: -1 for an extra `%` symbol, +1 to store null-terminator => +0
+    snprintf_P(buffer, sizeof(buffer), CONGRATULATION, age);
+    LCD.initScrolling(buffer, 10);
 
     ARDUINO_STATE = ArduinoState::CELEBRATE_LOOP;
 }
 
 void celebrate_loop() {
-    BUZZER.handle(); // continue playing the song
-    LCD.handleScrolling(
-            LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION
-    ); // continue displaying the text
+    // play song and scroll congratulation text:
+    BUZZER.handle();
+    LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
 
     if (CANDLE_LED.isPowered()) { // if candle is still turned on
         bool microphone_triggered = MICROPHONE.isTriggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
         );
-        if (microphone_triggered) { // if microphone indicates that candle is blown now
-            CANDLE_LED.turnOff(); // turn off the candle
+        if (microphone_triggered) { // if blowing is detected by the microphone
+            // turn of candle, gracefully finish scrolling and playing song:
+            CANDLE_LED.turnOff();
             BUILTIN_LED.turnOff();
-            LCD.finishScrolling(); // finish displaying the text
-            BUZZER.finishSong(); // finish playing the song
+            LCD.finishScrolling();
+            BUZZER.finishSong();
         }
-    } else { // if candle has been blown
+    } else { // if the candle is blown now
         if (BUZZER.getState() == BuzzerState::STANDBY &&
             !LCD.isScrolling()) { // if song has already stopped playing and LCD finished displaying the text
             ARDUINO_STATE = WISH_SETUP;

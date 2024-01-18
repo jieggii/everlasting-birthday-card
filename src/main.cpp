@@ -16,6 +16,7 @@
 #include "states/wish.h"
 #include "states/goodbye.h"
 
+
 void setup() {
     Serial.begin(9600);
 
@@ -88,7 +89,12 @@ void setup() {
 
     // Reset index of the current wish to a custom value if needed:
     if (WISH_INDEX_RESET) {
-        EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, WISH_INDEX_VALUE);
+        EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, WISH_INDEX_RESET_TO);
+
+        LCD.backlight();
+        LCD.displayInfo_P(INFO_WISH_INDEX_RESET);
+
+        while (true);
     }
 
     if (DIAGNOSTIC_BUTTON.isPressed()) { // if diagnostic button is pressed
@@ -96,7 +102,7 @@ void setup() {
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
 //        Serial.println(F("info: jump to HOME_SETUP"));
-        ARDUINO_STATE = ArduinoState::CELEBRATE_SETUP;
+        ARDUINO_STATE = ArduinoState::WISH_SETUP;
     }
 }
 
@@ -110,6 +116,7 @@ void loop() {
             diagnostic_loop();
             break;
 
+            // Home states:
         case ArduinoState::HOME_SETUP:
             home_setup();
             break;

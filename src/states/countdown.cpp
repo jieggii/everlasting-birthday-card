@@ -6,21 +6,19 @@
 #include "countdown.h"
 
 void countdown_setup() {
+    // start ticking using buzzer:
     BUZZER.beginTicking(
             COUNTDOWN_TICK_INTERVAL,
             COUNTDOWN_TICK_DURATION,
             COUNTDOWN_TICK_TONE,
             COUNTDOWN_TICK_COUNT
     );
-
-    Serial.println(F("info: jump to COUNTDOWN_LOOP"));
     ARDUINO_STATE = ArduinoState::COUNTDOWN_LOOP;
 }
 
 void countdown_loop() {
-    BUZZER.handle();
-    if (BUZZER.getState() == BuzzerState::STANDBY) {
-        Serial.println(F("info: jump to CELEBRATE_SETUP"));
+    BUZZER.handle(); // play ticking
+    if (BUZZER.getState() == BuzzerState::STANDBY) { // if the buzzer has ticked desired number of times:
         ARDUINO_STATE = ArduinoState::CELEBRATE_SETUP;
     }
 }

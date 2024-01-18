@@ -18,7 +18,7 @@ public:
 
     void displayRows(const char *row1, const char *row2);
 
-    void displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2);
+//    void displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2);
 
     void displayRows_P(const char *row1, const char *row2);
 
@@ -35,6 +35,7 @@ public:
 
     /// Returns true when text is being scrolled, false when it is not.
     bool isScrolling() const;
+
 
 private:
     /// Is true when scrolling text, false when not.

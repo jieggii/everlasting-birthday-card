@@ -9,42 +9,42 @@
 
 
 void wish_setup() {
-    // todo: fix wish index increment and handling logging
-    uint8_t wishIndex = EEPROM.read(WISH_INDEX_EEPROM_ADDRESS);
-    if (wishIndex > WISH_COUNT - 1) {
-        wishIndex = static_cast<uint8_t>(0);
-        Serial.println(F("warn: reset wish index to 0 as the stored one is out of range"));
-    }
-    // const short wishIndex = 0; // todo
-    Serial.println("debug: wish with index " + String(wishIndex) + " will be displayed"); // todo remove
+    LCD.backlight(); // todo remove
 
-    // Display the current wish:
-//    LCD.start_displaying(
-//            WISH_LIST[wishIndex],
-//            WISH_CAPTION,
-//            WISH_DISPLAY_FIRST_FRAME_DURATION,
-//            WISH_DISPLAY_FRAME_DURATION
-//    );
+    // Calculate number of wishes stored in the PROGMEM:
+    uint8_t wishes_count = 0;
+    while (pgm_read_ptr(&WISHES[wishes_count]) != nullptr) {
+        wishes_count++;
+    }
+
+    // Read current wish index:
+    uint8_t wish_index = EEPROM.read(WISH_INDEX_EEPROM_ADDRESS);
+
+    // Reset current wish index to 0 if it is out-of-bound:
+    if (wish_index >= wishes_count) {
+        wish_index = 0;
+        Serial.println(F("warn: reset wish index to 0 as the stored one is out of range")); // todo remove
+    }
+    Serial.println("debug: wish with index " + String(wish_index) + " will be displayed"); // todo remove
+
+    // Read current wish and put it into a buffer:
+    const char *wish = reinterpret_cast<const char *>(pgm_read_ptr(&WISHES[wish_index]));
+    char buffer[sizeof wish + 1];
+    strcpy_P(buffer, wish);
+
+    // Initialize wish scrolling on the LCD:
+    LCD.initScrolling(buffer, WISH_DISPLAY_COUNT);
 
     // Update stored wish index for the next wish to be displayed next time:
-    uint8_t nextWishIndex = wishIndex + 1;
-    if (nextWishIndex > WISH_COUNT - 1) {
-        nextWishIndex = 0;
-        Serial.println(F("warning: resetting stored wish index as the stored is out of range"));
-    }
-    EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, nextWishIndex);
-
-//    WISH_START_TS = millis();
+    EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, wish_index + 1);
 
     Serial.println(F("info: jump to WISH_LOOP"));
     ARDUINO_STATE = ArduinoState::WISH_LOOP;
 }
 
 void wish_loop() {
-//    LCD.handle(); // continue displaying the current wish
-//    if (millis() - WISH_START_TS >= WISH_DURATION) { // if wish duration has expired
-//        Serial.println("info: set state to SLEEP_COUNTDOWN_SETUP");
-//        STATE = STATE_SLEEP_COUNTDOWN_SETUP;
-//    }
-
+    LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
+    if (!LCD.isScrolling()) { // if finished scrolling the wish desired number of times
+        // todo
+    }
 }

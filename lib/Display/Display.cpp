@@ -39,25 +39,23 @@ void Display::display(const char *text, uint8_t shift = 0) {
 void Display::displayRows(const char *row1, const char *row2) {
     this->setCursor(0, 0);
     this->print(row1);
-
     this->setCursor(0, 1);
     this->print(row2);
 }
 
-void Display::displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2) {
-    this->setCursor(0, 0);
-    this->print(row1);
-
-    this->setCursor(0, 1);
-    this->print(row2);
-}
+//void Display::displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2) {
+//    this->setCursor(0, 0);
+//    this->print(row1);
+//    this->setCursor(0, 1);
+//    this->print(row2);
+//}
 
 void Display::displayRows_P(const char *row1, const char *row2) {
     char row1_buffer[strlen_P(row1) + 1];
     char row2_buffer[strlen_P(row2) + 1];
-
     strcpy_P(row1_buffer, row1);
     strcpy_P(row2_buffer, row2);
+
     this->displayRows(row1_buffer, row2_buffer);
 }
 
@@ -108,6 +106,7 @@ void Display::handleScrolling(unsigned short first_frame_duration, unsigned shor
             this->scrolling_streak++;
             if (this->scrolling_streak >= this->scrolling_count) {
                 this->is_scrolling = false;
+//                delete[] this->scrolling_text; // free allocated memory
             }
         } else {
             this->frame_start++;
