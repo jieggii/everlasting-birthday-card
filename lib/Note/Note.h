@@ -13,12 +13,14 @@ const unsigned short TONE_E4 = 330;
 const unsigned short TONE_F4 = 349;
 const unsigned short TONE_G4 = 392;
 
+/// Represents note duration (half, quarter or eighth note).
 enum NoteDuration {
     NOTE_DURATION_HALF,
     NOTE_DURATION_QUARTER,
     NOTE_DURATION_EIGHTH,
 };
 
+/// Represents note which have tone and duration.
 struct Note {
     unsigned short tone;
     NoteDuration duration;

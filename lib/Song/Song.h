@@ -5,6 +5,7 @@
 
 #include "../Note/Note.h"
 
+/// Represents song which should be played using buzzer.
 class Song {
 public:
     Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm);

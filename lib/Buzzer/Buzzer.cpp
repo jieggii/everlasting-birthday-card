@@ -4,22 +4,27 @@
 
 Buzzer::Buzzer(uint8_t pin) : pin(pin), song(nullptr) {}
 
+/// Sets OUTPUT mode for the buzzer pin.
 void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
 }
 
+/// Calls Tone function over buzzer's pin.
 void Buzzer::tone(unsigned int frequency) const {
 //    ::tone(this->pin, frequency);
 }
 
+/// Calls noTone function over buzzer's pin.
 void Buzzer::noTone() const {
     ::noTone(this->pin);
 }
 
+/// Returns current state of the buzzer.
 BuzzerState Buzzer::getState() const {
     return this->state;
 }
 
+/// Sets up a song which should be played, puts buzzer into PLAYING_SONG state.
 void Buzzer::initSong(const Song *song, uint8_t count) {
     this->song = song;
     this->song_count = count;
@@ -30,7 +35,8 @@ void Buzzer::initSong(const Song *song, uint8_t count) {
     this->state = BuzzerState::PLAYING_SONG;
 }
 
-void Buzzer::initTicking(int interval, int duration, int tone, uint8_t count) {
+/// Sets up ticking settings, puts buzzer into PLAYING_TICK state.
+void Buzzer::initTick(int interval, int duration, int tone, uint8_t count) {
     this->tick_interval = interval;
     this->tick_duration = duration;
     this->tick_tone = tone;
@@ -41,10 +47,12 @@ void Buzzer::initTicking(int interval, int duration, int tone, uint8_t count) {
     this->state = BuzzerState::PLAYING_TICK;
 }
 
+/// Gracefully finishes song playing (plays the last time till the end).
 void Buzzer::finishSong() {
     this->song_count = 0;
 }
 
+/// Handles tick playing (must be called in a loop).
 void Buzzer::handleTick() {
     if (this->state != BuzzerState::PLAYING_TICK) {
         return;
@@ -74,6 +82,7 @@ void Buzzer::handleTick() {
     }
 }
 
+/// Handles song playing (must be called in a loop).
 void Buzzer::handleSong() {
     if (this->state != BuzzerState::PLAYING_SONG) {
         return;
@@ -127,6 +136,7 @@ void Buzzer::handleSong() {
     }
 }
 
+/// General handling method choosing what to play according to the buzzer state (must be called in a loop).
 void Buzzer::handle() {
     switch (this->state) {
         case BuzzerState::STANDBY:
@@ -142,6 +152,7 @@ void Buzzer::handle() {
     }
 }
 
+/// Resets buzzer to the STANDBY state.
 void Buzzer::reset() {
     this->is_playing = false;
     this->state = BuzzerState::STANDBY;

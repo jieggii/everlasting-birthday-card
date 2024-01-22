@@ -7,6 +7,7 @@ BirthDate::BirthDate(
         uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec
 ) : DateTime(year, month, day, hour, min, sec) {}
 
+/// Returns date of the next birthday celebration.
 DateTime BirthDate::nextBirthday(const DateTime &now) const {
     const DateTime birthday_this_year = DateTime(
             now.year(), this->month(), this->day(),

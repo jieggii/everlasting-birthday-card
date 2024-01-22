@@ -36,7 +36,7 @@ public:
     void initSong(const Song *song, uint8_t count);
 
     /// Begin ticking.
-    void initTicking(int interval, int duration, int tone, uint8_t count);
+    void initTick(int interval, int duration, int tone, uint8_t count);
 
     /// Gracefully finish playing song before song streak is reached.
     void finishSong();

@@ -5,7 +5,7 @@ Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
         LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows) {
 }
 
-/// Displays text of max length 32 using first and second row of the LCD.
+/// Displays text of maximal length of 32 characters using first and second row of the LCD.
 void Display::display(const char *text, uint8_t shift = 0) {
     char row1_buffer[DISPLAY_COLS + 1];
     char row2_buffer[DISPLAY_COLS + 1];
@@ -36,6 +36,7 @@ void Display::display(const char *text, uint8_t shift = 0) {
     this->displayRows(row1_buffer, row2_buffer);
 }
 
+/// Displays text in both rows separately.
 void Display::displayRows(const char *row1, const char *row2) {
     this->setCursor(0, 0);
     this->print(row1);
@@ -50,6 +51,7 @@ void Display::displayRows(const char *row1, const char *row2) {
 //    this->print(row2);
 //}
 
+/// Displays text stored in PROGMEM in both rows separately.
 void Display::displayRows_P(const char *row1, const char *row2) {
     char row1_buffer[strlen_P(row1) + 1];
     char row2_buffer[strlen_P(row2) + 1];
@@ -59,14 +61,17 @@ void Display::displayRows_P(const char *row1, const char *row2) {
     this->displayRows(row1_buffer, row2_buffer);
 }
 
+/// Displays an error message stored in PROGMEM.
 void Display::displayError_P(const char *message) {
     this->displayRows_P(ERROR_LITERAL, message);
 }
 
+/// Displays information message stored in PROGMEM.
 void Display::displayInfo_P(const char *message) {
     this->displayRows(INFO_LITERAL, message);
 }
 
+/// Sets up scrolling settings, put display into scrolling state.
 void Display::initScrolling(const char *text, uint8_t count) {
     this->scrolling_text = text;
     this->scrolling_count = count;
@@ -77,14 +82,17 @@ void Display::initScrolling(const char *text, uint8_t count) {
     this->next_frame_start_ts = millis();
 }
 
+/// Gracefully finishes scrolling text (shows it until the end).
 void Display::finishScrolling() {
     this->scrolling_count = 0;
 }
 
+/// Returns true if display is in the scrolling state.
 bool Display::isScrolling() const {
     return this->is_scrolling;
 }
 
+/// Handles scrolling (must be called in a loop).
 void Display::handleScrolling(unsigned short first_frame_duration, unsigned short frame_duration) {
     if (!this->isScrolling()) {
         return;
