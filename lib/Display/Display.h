@@ -48,10 +48,10 @@ private:
     unsigned short scrolling_text_length = 0;
 
     /// Target count of scrolling. todo
-    unsigned char scrolling_count = 0;
+    uint8_t scrolling_count = 0;
 
     /// Current number of times text has been scrolled.
-    unsigned char scrolling_streak = 0;
+    uint8_t scrolling_streak = 0;
 
     unsigned short frame_start = 0;
     unsigned long next_frame_start_ts = 0;

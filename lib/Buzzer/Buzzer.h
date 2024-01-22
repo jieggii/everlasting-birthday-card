@@ -1,6 +1,7 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_BUZZER_H
 #define EVERLASTING_BIRTHDAY_CARD_BUZZER_H
 
+#include "stdint.h"
 #include "../Song/Song.h"
 
 
@@ -17,7 +18,7 @@ enum BuzzerState {
 
 class Buzzer {
 public:
-    explicit Buzzer(unsigned char pin);
+    explicit Buzzer(uint8_t pin);
 
     /// Initialize output pin for buzzer.
     void initPin() const;
@@ -32,10 +33,10 @@ public:
     BuzzerState getState() const;
 
     /// Start repeatedly playing song.
-    void beginSong(const Song *song, unsigned char count);
+    void initSong(const Song *song, uint8_t count);
 
-    /// Start ticking.
-    void beginTicking(int interval, int duration, int tone, unsigned char count);
+    /// Begin ticking.
+    void initTicking(int interval, int duration, int tone, uint8_t count);
 
     /// Gracefully finish playing song before song streak is reached.
     void finishSong();
@@ -46,7 +47,7 @@ public:
 
 private:
     /// Output pin number.
-    unsigned char pin;
+    uint8_t pin;
 
     /// Current buzzer state.
     BuzzerState state = STANDBY;
@@ -56,7 +57,7 @@ private:
 
     // Related to BUZZER_STATE_TICK state:
     /// Amount of ticks to be played.
-    unsigned char tick_count = 0;
+    uint8_t tick_count = 0;
 
     /// Amount of ticks played in a row at the moment.
     unsigned short tick_streak = 0;
@@ -75,7 +76,7 @@ private:
 
 
     // Related to BUZZER_STATE_SONG state:
-    /// Song which is being played by buzzer.
+    /// Song which is being played by the buzzer.
     Song const *song;
 
     /// Amount of times song must be played.
@@ -85,7 +86,7 @@ private:
     unsigned short song_streak = 0;
 
     /// Index of the current note in the song.
-    unsigned char song_note_index = 0;
+    uint8_t song_note_index = 0;
 
     /// Timestamp when the current note started playing.
     unsigned long song_note_start_ts = 0;

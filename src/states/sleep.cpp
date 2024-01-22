@@ -17,10 +17,9 @@ void wake_up_interrupt_handler() {
 
 void sleep_setup() {
     // Reset the alarm 1 in case it fired:
-    RTC.clearAlarm(1);
 
     Serial.println(F("info: jump to SLEEP_LOOP"));
-    ARDUINO_STATE = SLEEP_LOOP;
+//    ARDUINO_STATE = SLEEP_LOOP;
 }
 
 void sleep_loop() {

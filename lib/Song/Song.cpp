@@ -1,6 +1,7 @@
 #include "Song.h"
 
-Song::Song(const Note *notes, unsigned short notes_count, unsigned char note_gap, unsigned short bpm) {
+
+Song::Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm) {
     this->notes = notes;
     this->notes_count = notes_count;
     this->note_gap = note_gap;
@@ -20,7 +21,7 @@ unsigned short Song::getNotesCount() const {
     return this->notes_count;
 }
 
-unsigned char Song::getNoteGap() const {
+uint8_t Song::getNoteGap() const {
     return this->note_gap;
 }
 

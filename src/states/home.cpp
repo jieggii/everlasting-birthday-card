@@ -7,6 +7,7 @@
 
 
 void home_setup() {
+    LCD.backlight();
     ARDUINO_STATE = ArduinoState::HOME_LOOP;
 }
 
@@ -22,6 +23,6 @@ void home_loop() {
     sprintf(row1, "Do DR: %d dnei,", time_left.days());
     sprintf(row2, "    %02d:%02d:%02d    ", time_left.hours(), time_left.minutes(), time_left.seconds());
     LCD.displayRows(row1, row2);
-    
+
     delay(1000);
 }

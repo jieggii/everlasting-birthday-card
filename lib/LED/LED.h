@@ -4,7 +4,7 @@
 
 class LED {
 public:
-    explicit LED(unsigned char pin);
+    explicit LED(uint8_t pin);
 
     /// Set appropriate pin mode for the LED pin.
     void initPin() const;
@@ -23,7 +23,7 @@ public:
 
 private:
     /// Pin number.
-    unsigned char pin;
+    uint8_t pin;
 
     /// Indicates whether the candle LED turned on or turned off.
     bool is_powered = false;

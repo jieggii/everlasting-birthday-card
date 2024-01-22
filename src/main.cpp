@@ -17,6 +17,20 @@
 #include "states/goodbye.h"
 
 
+/// Handles alarm interrupt: changes `ARDUINO_STATE` to ArduinoState::COUNTDOWN_SETUP
+/// if current month matches with the birthday month.
+void alarm_interrupt_handler() {
+    // clear alarm status:
+    RTC.clearAlarm(1);
+
+    // check if the current month matches with the birthday month:
+    // (this logic is needed as DS3231 has no support for annual alarms)
+    const DateTime now = RTC.now();
+    if (now.month() == BIRTH_DATE.month()) {
+        ARDUINO_STATE = ArduinoState::COUNTDOWN_SETUP;
+    }
+}
+
 void setup() {
     Serial.begin(9600);
 
@@ -86,6 +100,9 @@ void setup() {
 
         while (true);
     }
+
+    // Set up an alarm interrupt handler:
+    attachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN), alarm_interrupt_handler, LOW);
 
     // Reset index of the current wish to a custom value if needed:
     if (WISH_INDEX_RESET) {

@@ -11,7 +11,7 @@ void Display::display(const char *text, uint8_t shift = 0) {
     char row2_buffer[DISPLAY_COLS + 1];
 
     bool met_terminator = false;
-    for (unsigned short i = 0; i < 32; i++) {
+    for (unsigned short i = 0; i < DISPLAY_COLS * DISPLAY_ROWS; i++) {
         if (text[i + shift] == '\0') {
             met_terminator = true;
         }
@@ -106,7 +106,6 @@ void Display::handleScrolling(unsigned short first_frame_duration, unsigned shor
             this->scrolling_streak++;
             if (this->scrolling_streak >= this->scrolling_count) {
                 this->is_scrolling = false;
-//                delete[] this->scrolling_text; // free allocated memory
             }
         } else {
             this->frame_start++;

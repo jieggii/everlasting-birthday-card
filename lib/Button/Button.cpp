@@ -2,12 +2,12 @@
 
 #include "Button.h"
 
-Button::Button(unsigned char pin) : pin(pin) {}
+Button::Button(uint8_t pin) : pin(pin) {}
 
 void Button::initPin() const {
     pinMode(this->pin, INPUT);
 }
 
 bool Button::isPressed() const {
-    return digitalRead(this->pin) == 1;
+    return digitalRead(this->pin) == HIGH;
 }

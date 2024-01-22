@@ -1,7 +1,8 @@
-#include "LED.h"
 #include "Arduino.h"
 
-LED::LED(unsigned char pin) : pin(pin) {}
+#include "LED.h"
+
+LED::LED(uint8_t pin) : pin(pin) {}
 
 void LED::initPin() const {
     pinMode(this->pin, OUTPUT);

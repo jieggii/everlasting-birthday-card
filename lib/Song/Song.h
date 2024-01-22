@@ -1,17 +1,19 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_SONG_H
 #define EVERLASTING_BIRTHDAY_CARD_SONG_H
 
+#include "stdint.h"
+
 #include "../Note/Note.h"
 
 class Song {
 public:
-    Song(const Note *notes, unsigned short notes_count, unsigned char note_gap, unsigned short bpm);
+    Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm);
 
     const Note *getNotes() const;
 
     unsigned short getNotesCount() const;
 
-    unsigned char getNoteGap() const;
+    uint8_t getNoteGap() const;
 
     unsigned short getHalfDuration() const;
 
@@ -28,7 +30,7 @@ private:
     unsigned short notes_count;
 
     /// Time gap between notes in ms (to avoid legato).
-    unsigned char note_gap;
+    uint8_t note_gap;
 
     /// Duration of a half note in ms.
     unsigned short half_duration;

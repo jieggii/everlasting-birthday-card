@@ -12,8 +12,8 @@ enum ArduinoState {
     HOME_LOOP,
 
     // Sleep states: Arduino is waiting for the birthday date (DS3231 alarm interrupt) in the power down mode.
-    SLEEP_SETUP,
-    SLEEP_LOOP,
+//    SLEEP_SETUP,
+//    SLEEP_LOOP,
 
     // Countdown state: Arduino is counting down until it begins celebrating.
     COUNTDOWN_SETUP,

@@ -8,10 +8,11 @@
 
 void celebrate_setup() {
     // Setup hardware:
+    LCD.backlight();
     CANDLE_LED.turnOn();
     BUILTIN_LED.turnOn();
     LCD.backlight();
-    BUZZER.beginSong(&SONG, SONG_REPEAT);
+    BUZZER.initSong(&SONG, SONG_REPEAT);
 
     // Calculate person's age at the moment:
     const DateTime now = RTC.now();

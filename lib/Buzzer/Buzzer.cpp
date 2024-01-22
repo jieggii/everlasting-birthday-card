@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 
-Buzzer::Buzzer(unsigned char pin) : pin(pin), song(nullptr) {}
+Buzzer::Buzzer(uint8_t pin) : pin(pin), song(nullptr) {}
 
 void Buzzer::initPin() const {
     pinMode(this->pin, OUTPUT);
@@ -20,7 +20,7 @@ BuzzerState Buzzer::getState() const {
     return this->state;
 }
 
-void Buzzer::beginSong(const Song *song, unsigned char count) {
+void Buzzer::initSong(const Song *song, uint8_t count) {
     this->song = song;
     this->song_count = count;
 
@@ -30,7 +30,7 @@ void Buzzer::beginSong(const Song *song, unsigned char count) {
     this->state = BuzzerState::PLAYING_SONG;
 }
 
-void Buzzer::beginTicking(int interval, int duration, int tone, unsigned char count) {
+void Buzzer::initTicking(int interval, int duration, int tone, uint8_t count) {
     this->tick_interval = interval;
     this->tick_duration = duration;
     this->tick_tone = tone;

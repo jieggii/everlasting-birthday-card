@@ -4,14 +4,14 @@
 
 class Button {
 public:
-    Button(unsigned char pin);
+    explicit Button(uint8_t pin);
 
     void initPin() const;
 
     bool isPressed() const;
 
 private:
-    unsigned char pin;
+    uint8_t pin;
 };
 
 

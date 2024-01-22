@@ -9,8 +9,6 @@
 
 
 void wish_setup() {
-    LCD.backlight(); // todo remove
-
     // Calculate number of wishes stored in the PROGMEM:
     uint8_t wishes_count = 0;
     while (pgm_read_ptr(&WISHES[wishes_count]) != nullptr) {
@@ -45,6 +43,6 @@ void wish_setup() {
 void wish_loop() {
     LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
     if (!LCD.isScrolling()) { // if finished scrolling the wish desired number of times
-        // todo
+        ARDUINO_STATE = ArduinoState::GOODBYE_SETUP;
     }
 }
