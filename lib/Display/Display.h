@@ -10,6 +10,7 @@ const char ERROR_LITERAL[] PROGMEM = "ERROR:";
 const char INFO_LITERAL[] PROGMEM = "INFO:";
 
 
+/// Represents a 16x2 LCD display.
 class Display : public LiquidCrystal_I2C {
 public:
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
@@ -30,10 +31,8 @@ public:
 
     void handleScrolling(unsigned short first_frame_duration, unsigned short frame_duration);
 
-    /// Gracefully finishes scrolling text before target count is reached. todo
     void finishScrolling();
 
-    /// Returns true when text is being scrolled, false when it is not.
     bool isScrolling() const;
 
 

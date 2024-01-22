@@ -2,22 +2,19 @@
 #define EVERLASTING_BIRTHDAY_CARD_LED_H
 
 
+/// Represents a physical LED.
 class LED {
 public:
     explicit LED(uint8_t pin);
 
-    /// Set appropriate pin mode for the LED pin.
     void initPin() const;
 
-    /// Returns true when LED is powered, false otherwise.
     bool isPowered() const {
         return this->is_powered;
     }
 
-    /// Turn turnOn the candle.
     void turnOn();
 
-    /// Turn turnOff the candle.
     void turnOff();
 
 

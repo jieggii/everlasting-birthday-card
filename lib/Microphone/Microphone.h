@@ -3,15 +3,13 @@
 
 #include "stdint.h"
 
-
+/// Represents a physical microphone module.
 class Microphone {
 public:
     explicit Microphone(uint8_t pin);
 
-    /// Initialize microphone analog input pin.
     void initPin() const;
-
-    /// Returns true if the given `treshold` has been reached or exceeded `streak` times in a row.
+    
     bool isTriggered(unsigned short treshold, uint8_t streak);
 
 private:

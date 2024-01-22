@@ -16,29 +16,23 @@ enum BuzzerState {
     PLAYING_TICK,
 };
 
+/// Represents a physical buzzer.
 class Buzzer {
 public:
     explicit Buzzer(uint8_t pin);
 
-    /// Initialize output pin for buzzer.
     void initPin() const;
 
-    /// Call `tone` function from Arduino stdlib over the buzzer pin.
     void tone(unsigned int frequency) const;
 
-    /// Cal `noTone` function from Arduino stdlib over the buzzer pin.
     void noTone() const;
 
-    /// Returns current state of the buzzer.
     BuzzerState getState() const;
 
-    /// Start repeatedly playing song.
     void initSong(const Song *song, uint8_t count);
 
-    /// Begin ticking.
     void initTick(int interval, int duration, int tone, uint8_t count);
 
-    /// Gracefully finish playing song before song streak is reached.
     void finishSong();
 
     /// General method to handle buzzer.

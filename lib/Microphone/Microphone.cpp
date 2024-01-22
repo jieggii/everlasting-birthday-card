@@ -11,7 +11,7 @@ void Microphone::initPin() const {
     pinMode(this->pin, INPUT);
 }
 
-/// Returns true if provided t`treshold` value has been achieved for the `streak` times in a row.
+/// Returns true if the given `treshold` has been reached or exceeded `streak` times in a row.
 bool Microphone::isTriggered(unsigned short treshold, uint8_t streak) {
     int reading = analogRead(this->pin);
     // note: comparing signed value (reading) and unsigned (treshold) because we are 100% sure, that reading will never be negative
