@@ -1,3 +1,5 @@
+#include "settings.h"
+
 #include "globals/state.h"
 #include "globals/hardware.h"
 
@@ -7,8 +9,18 @@
 
 
 void goodbye_setup() {
+    LCD.clear();
+
+    char buffer[strlen_P(GOODBYE_TEXT)];
+    strcpy_P(buffer, GOODBYE_TEXT);
+    LCD.initScrolling(buffer, 1);
+
+    ARDUINO_STATE = ArduinoState::GOODBYE_LOOP;
 }
 
 void goodbye_loop() {
-    ARDUINO_STATE = ArduinoState::HOME_SETUP;
+    LCD.handleScrolling(1000, 500);
+    if (!LCD.isScrolling()) {
+        ARDUINO_STATE = ArduinoState::HOME_SETUP;
+    }
 }

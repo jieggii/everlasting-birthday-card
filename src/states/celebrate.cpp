@@ -43,8 +43,8 @@ void celebrate_loop() {
             BUZZER.finishSong();
         }
     } else { // if the candle is blown now
-        if (BUZZER.getState() == BuzzerState::STANDBY &&
-            !LCD.isScrolling()) { // if song has already stopped playing and LCD finished displaying the text
+        if (BUZZER.getState() == BuzzerState::STANDBY) { // if song has already stopped playing
+            LCD.reset();
             ARDUINO_STATE = WISH_SETUP;
         }
     }

@@ -10,7 +10,7 @@ void countdown_setup() {
     LCD.noBacklight();
 
     // start ticking using buzzer:
-    BUZZER.initTicking(
+    BUZZER.initTick(
             COUNTDOWN_TICK_INTERVAL,
             COUNTDOWN_TICK_DURATION,
             COUNTDOWN_TICK_TONE,

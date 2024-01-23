@@ -36,7 +36,6 @@ void wish_setup() {
     // Update stored wish index for the next wish to be displayed next time:
     EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, wish_index + 1);
 
-    Serial.println(F("info: jump to WISH_LOOP"));
     ARDUINO_STATE = ArduinoState::WISH_LOOP;
 }
 

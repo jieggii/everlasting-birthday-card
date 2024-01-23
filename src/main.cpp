@@ -119,7 +119,7 @@ void setup() {
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
 //        Serial.println(F("info: jump to HOME_SETUP"));
-        ARDUINO_STATE = ArduinoState::WISH_SETUP;
+        ARDUINO_STATE = ArduinoState::COUNTDOWN_SETUP;
     }
 }
 
@@ -140,14 +140,6 @@ void loop() {
 
         case ArduinoState::HOME_LOOP:
             home_loop();
-            break;
-
-            // Sleep states:
-        case ArduinoState::SLEEP_SETUP:
-            sleep_setup();
-            break;
-        case ArduinoState::SLEEP_LOOP:
-            sleep_loop();
             break;
 
             // Countdown states:
