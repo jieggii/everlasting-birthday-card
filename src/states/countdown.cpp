@@ -6,7 +6,8 @@
 #include "countdown.h"
 
 void countdown_setup() {
-    // disable backlight:
+    // clear the screen disable backlight:
+    LCD.clear();
     LCD.noBacklight();
 
     // start ticking using buzzer:

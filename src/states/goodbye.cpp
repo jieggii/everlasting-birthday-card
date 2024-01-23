@@ -21,6 +21,9 @@ void goodbye_setup() {
 void goodbye_loop() {
     LCD.handleScrolling(1000, 500);
     if (!LCD.isScrolling()) {
+        LCD.noBacklight();
+        delay(2000);
         ARDUINO_STATE = ArduinoState::HOME_SETUP;
     }
+
 }
