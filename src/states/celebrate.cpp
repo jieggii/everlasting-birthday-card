@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "songs/birthday.h"
 
 #include "globals/hardware.h"
 #include "globals/state.h"
@@ -12,7 +13,7 @@ void celebrate_setup() {
     CANDLE_LED.turnOn();
     BUILTIN_LED.turnOn();
     LCD.backlight();
-    BUZZER.initSong(&SONG, SONG_REPEAT);
+    BUZZER.initSong(&BIRTHDAY_SONG, BIRTHDAY_SONG_REPEAT);
 
     // Calculate person's age at the moment:
     const DateTime now = RTC.now();

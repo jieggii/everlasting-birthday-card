@@ -25,7 +25,7 @@ void home_loop() {
     sprintf(row2, "    %02d:%02d:%02d    ", time_left.hours(), time_left.minutes(), time_left.seconds());
     LCD.displayRows(row1, row2);
 
-    BUZZER.tone(520);
+    BUZZER.tone(220);
     delay(25);
     BUZZER.noTone();
 
