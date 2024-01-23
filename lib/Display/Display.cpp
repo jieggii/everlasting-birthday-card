@@ -113,7 +113,7 @@ void Display::handleScrolling(unsigned short first_frame_duration, unsigned shor
             this->frame_start = 0;
             this->scrolling_streak++;
             if (this->scrolling_streak >= this->scrolling_count) {
-                this->is_scrolling = false;
+                this->reset();
             }
         } else {
             this->frame_start++;
@@ -121,7 +121,16 @@ void Display::handleScrolling(unsigned short first_frame_duration, unsigned shor
     }
 }
 
+/// Resets display to the default state aborting scrolling.
+void Display::reset() {
+    this->is_scrolling = false;
 
+    this->scrolling_count = 0;
+    this->scrolling_streak = 0;
 
+    this->scrolling_text = nullptr;
+    this->scrolling_text_length = 0;
 
-
+    this->frame_start = 0;
+    this->next_frame_start_ts = 0;
+}

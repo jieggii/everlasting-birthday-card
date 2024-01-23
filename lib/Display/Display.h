@@ -35,6 +35,8 @@ public:
 
     bool isScrolling() const;
 
+    void reset();
+
 
 private:
     /// Is true when scrolling text, false when not.
