@@ -11,7 +11,7 @@
 void goodbye_setup() {
     LCD.clear();
 
-    char buffer[strlen_P(GOODBYE_TEXT)];
+    char buffer[strlen_P(GOODBYE_TEXT) + 1];
     strcpy_P(buffer, GOODBYE_TEXT);
     LCD.initScrolling(buffer, 1);
 

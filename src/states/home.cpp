@@ -12,6 +12,7 @@ void home_setup() {
 }
 
 void home_loop() {
+    Serial.println("in loop");
     const DateTime now = RTC.now();
     const DateTime birthday = BIRTH_DATE.nextBirthday(now);
     const TimeSpan time_left = birthday - now;

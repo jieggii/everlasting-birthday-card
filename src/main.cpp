@@ -10,25 +10,21 @@
 
 #include "states/diagnostic.h"
 #include "states/home.h"
-#include "states/sleep.h"
+#include "states/check_month.h"
 #include "states/countdown.h"
 #include "states/celebrate.h"
 #include "states/wish.h"
 #include "states/goodbye.h"
 
 
-/// Handles alarm interrupt: changes `ARDUINO_STATE` to ArduinoState::COUNTDOWN_SETUP
-/// if current month matches with the birthday month.
+/// Handles DS3231 alarm interrupt: detaches interrupt pin to avoid
+/// the ISR to be called again, puts Arduino into CHECK_MONTH state.
 void alarm_interrupt_handler() {
-    // clear alarm status:
-    RTC.clearAlarm(1);
+    detachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN));
 
-    // check if the current month matches with the birthday month:
-    // (this logic is needed as DS3231 has no support for annual alarms)
-    const DateTime now = RTC.now();
-    if (now.month() == BIRTH_DATE.month()) {
-        ARDUINO_STATE = ArduinoState::COUNTDOWN_SETUP;
-    }
+    // Change state to CHECK_MONTH in order to check if the current month matches with the
+    // birthday month. This logic is needed as DS3231 has no support for annual alarms.
+    ARDUINO_STATE = ArduinoState::CHECK_MONTH;
 }
 
 void setup() {
@@ -40,16 +36,16 @@ void setup() {
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
 
     // Setup outputs:
+    LCD.init();        // initialize display
+    LCD.clear();       // clear display
+    LCD.noBacklight(); // disable display backlight
+
     CANDLE_LED.initPin();  // candle LED pin
     FAILURE_LED.initPin(); // failure LED pin
     BUILTIN_LED.initPin(); // builtin LED pin
     BUZZER.initPin();      // buzzer pin
 
-    LCD.init();        // initialize display
-    LCD.clear();       // clear display
-    LCD.noBacklight(); // disable display backlight
-
-    // Initialize RTC module:
+    // Initialize DS3231 RTC module:
     if (!RTC.begin()) {
         FAILURE_LED.turnOn();
 
@@ -85,7 +81,7 @@ void setup() {
     RTC.disable32K(); // disable 32K pin as it is not needed
     RTC.writeSqwPinMode(DS3231_OFF); // disable square wave generation on SQW pin as it is not needed
 
-    // Reset both alarms:
+    // Reset alarm flags for both alarms:
     RTC.clearAlarm(1);
     RTC.clearAlarm(2);
 
@@ -101,7 +97,7 @@ void setup() {
         while (true);
     }
 
-    // Set up an alarm interrupt handler:
+    // Attach an alarm interrupt handler:
     attachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN), alarm_interrupt_handler, LOW);
 
     // Reset index of the current wish to a custom value if needed:
@@ -114,12 +110,10 @@ void setup() {
         while (true);
     }
 
-    if (DIAGNOSTIC_BUTTON.isPressed()) { // if diagnostic button is pressed
-//        Serial.println(F("info: jump to DIAGNOSTIC_SETUP"));
+    if (DIAGNOSTIC_BUTTON.isPressed()) {
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
-//        Serial.println(F("info: jump to HOME_SETUP"));
-        ARDUINO_STATE = ArduinoState::COUNTDOWN_SETUP;
+        ARDUINO_STATE = ArduinoState::HOME_SETUP;
     }
 }
 
@@ -140,6 +134,11 @@ void loop() {
 
         case ArduinoState::HOME_LOOP:
             home_loop();
+            break;
+
+            // Check month state:
+        case ArduinoState::CHECK_MONTH:
+            check_month();
             break;
 
             // Countdown states:
