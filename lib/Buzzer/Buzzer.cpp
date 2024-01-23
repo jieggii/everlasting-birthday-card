@@ -11,7 +11,7 @@ void Buzzer::initPin() const {
 
 /// Calls Tone function over buzzer's pin.
 void Buzzer::tone(unsigned int frequency) const {
-//    ::tone(this->pin, frequency);
+    ::tone(this->pin, frequency);
 }
 
 /// Calls noTone function over buzzer's pin.
