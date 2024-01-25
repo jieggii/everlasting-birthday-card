@@ -68,7 +68,7 @@ void Display::displayError_P(const char *message) {
 
 /// Displays information message stored in PROGMEM.
 void Display::displayInfo_P(const char *message) {
-    this->displayRows(INFO_LITERAL, message);
+    this->displayRows_P(INFO_LITERAL, message);
 }
 
 /// Sets up scrolling settings, put display into scrolling state.
