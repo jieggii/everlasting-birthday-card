@@ -5,9 +5,6 @@
 
 #include "goodbye.h"
 
-// todo: display something like "see you in the next year" for 5 sec
-
-
 void goodbye_setup() {
     LCD.clear();
 
@@ -22,8 +19,7 @@ void goodbye_loop() {
     LCD.handleScrolling(1000, 500);
     if (!LCD.isScrolling()) {
         LCD.noBacklight();
-        delay(2000);
+        delay(1500);
         ARDUINO_STATE = ArduinoState::HOME_SETUP;
     }
-
 }
