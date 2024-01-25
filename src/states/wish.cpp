@@ -1,6 +1,8 @@
 #include "EEPROM.h"
 
 #include "settings.h"
+#include "songs/undertale_once_upon_a_time.h"
+#include "songs/birthday.h"
 
 #include "globals/state.h"
 #include "globals/hardware.h"
@@ -10,6 +12,9 @@
 
 void wish_setup() {
     LCD.backlight(); // todo remove
+
+    BUZZER.initSong(&UNDERTALE_ONCE_UPON_A_TIME_SONG, 2);
+
     // Calculate number of wishes stored in the PROGMEM:
     const uint8_t wishes_count = sizeof(WISHES) / sizeof(WISHES[0]);
 
@@ -38,8 +43,13 @@ void wish_setup() {
 }
 
 void wish_loop() {
+    BUZZER.handle();
     LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
-    if (!LCD.isScrolling()) { // if finished scrolling the wish desired number of times
-        ARDUINO_STATE = ArduinoState::GOODBYE_SETUP;
+    if (!LCD.isScrolling()) {
+        if (BUZZER.getState() == BuzzerState::PLAYING_SONG) {
+            BUZZER.finishSong();
+        } else {
+            ARDUINO_STATE = ArduinoState::GOODBYE_SETUP;
+        }
     }
 }
