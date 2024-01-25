@@ -16,11 +16,7 @@ public:
 
     uint8_t getNoteGap() const;
 
-    unsigned short getHalfDuration() const;
-
-    unsigned short getQuarterDuration() const;
-
-    unsigned short getEighthDuration() const;
+    unsigned short getNoteDurationMs(NoteDuration duration) const;
 
 
 private:
@@ -33,6 +29,9 @@ private:
     /// Time gap between notes in ms (to avoid legato).
     uint8_t note_gap;
 
+    /// Duration of a whole note in ms.
+    unsigned short whole_duration;
+
     /// Duration of a half note in ms.
     unsigned short half_duration;
 
@@ -41,6 +40,9 @@ private:
 
     /// Duration of an eighth note in ms.
     unsigned short eighth_duration;
+
+    /// Duration of a sixteenth note in ms.
+    unsigned short sixteenth_duration;
 };
 
 #endif //EVERLASTING_BIRTHDAY_CARD_SONG_H
