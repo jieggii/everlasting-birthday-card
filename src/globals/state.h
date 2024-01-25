@@ -11,7 +11,7 @@ enum ArduinoState {
     HOME_SETUP,
     HOME_LOOP,
 
-    // todo
+    // Check month state: Arduino jumps to COUNTDOWN_SETUP state if the current month matches with the birthday month, otherwise to HOME_SETUP
     CHECK_MONTH,
 
     // Countdown state: Arduino is counting down until it begins celebrating.
