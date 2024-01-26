@@ -1,3 +1,5 @@
+#include "avr/pgmspace.h"
+
 #include "Song.h"
 
 
@@ -17,9 +19,9 @@ Song::Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsi
 }
 
 /// Returns array of notes of the song.
-const Note *Song::getNotes() const {
-    return this->notes;
-}
+//const Note *Song::getNotes() const {
+//    return this->notes;
+//}
 
 /// Returns amount of notes in the song.
 unsigned short Song::getNotesCount() const {
@@ -29,6 +31,12 @@ unsigned short Song::getNotesCount() const {
 /// Returns gap between notes.
 uint8_t Song::getNoteGap() const {
     return this->note_gap;
+}
+
+Note Song::getNote(unsigned short index) const {
+    Note note;
+    memcpy_P(&note, &this->notes[index], sizeof(Note));
+    return note;
 }
 
 /// Returns duration of a note in ms based on its duration type.

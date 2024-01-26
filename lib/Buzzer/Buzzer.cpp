@@ -30,6 +30,7 @@ void Buzzer::initSong(const Song *song, uint8_t count) {
     this->song_count = count;
 
     this->song_streak = 0;
+
     this->song_current_note_index = 0;
     this->song_start = true;
 
@@ -97,18 +98,19 @@ void Buzzer::handleSong() {
 
         // set current note and its duration in ms:
         this->song_current_note_index = 0;
-        this->song_current_note = &this->song->getNotes()[this->song_current_note_index];
-        this->song_current_note_duration_ms = this->song->getNoteDurationMs(this->song_current_note->duration);
+        this->song_current_note = this->song->getNote(this->song_current_note_index);
+        this->song_current_note_duration_ms = this->song->getNoteDurationMs(this->song_current_note.duration);
 
         // start playing the first note
-        this->song_note_start_ts = now;
+        this->song_current_note_start_ts = now;
         this->is_playing = true;
-        this->tone(song_current_note->tone);
+        this->tone(song_current_note.tone);
 
         return;
     }
 
-    if (now - this->song_note_start_ts >= this->song_current_note_duration_ms) {  // if it is time to play next note
+    if (now - this->song_current_note_start_ts >=
+        this->song_current_note_duration_ms) {  // if it is time to play next note
         // if the note which finishes its duration was the last one:
         if (this->song_current_note_index == this->song->getNotesCount() - 1) {
             this->song_streak++; // increment counter of songs played
@@ -122,14 +124,14 @@ void Buzzer::handleSong() {
             this->song_current_note_index++;
         }
 
-        this->song_current_note = &this->song->getNotes()[song_current_note_index];
-        this->song_note_start_ts = now;
+        this->song_current_note = this->song->getNote(this->song_current_note_index);
+        this->song_current_note_start_ts = now;
         this->is_playing = true;
-        if (this->song_current_note->tone != TONE_REST) {
-            this->tone(this->song_current_note->tone);
+        if (this->song_current_note.tone != TONE_REST) {
+            this->tone(this->song_current_note.tone);
         }
-        this->song_current_note_duration_ms = this->song->getNoteDurationMs(this->song_current_note->duration);
-    } else if (now - this->song_note_start_ts >=
+        this->song_current_note_duration_ms = this->song->getNoteDurationMs(this->song_current_note.duration);
+    } else if (now - this->song_current_note_start_ts >=
                this->song_current_note_duration_ms - this->song->getNoteGap() &&
                this->is_playing) { // if it is time to finish current note
         this->noTone();

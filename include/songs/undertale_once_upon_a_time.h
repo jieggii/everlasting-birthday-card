@@ -3,19 +3,16 @@
     Source: https://musescore.com/user/5771981/scores/1407296.
 */
 
-
-#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
-#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
+#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H
+#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H
 
 #include "stdint.h"
 
 #include "../../lib/Note/Note.h"
 #include "../../lib/Song/Song.h"
 
-// Undertale - Once Upon a Time (4/4).
-// https://musescore.com/user/5771981/scores/1407296
 
-const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] = {
+const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_C5,   NoteDuration::HALF},
         {TONE_C6,   NoteDuration::HALF},
@@ -235,19 +232,12 @@ const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] = {
         {TONE_C4,   NoteDuration::QUARTER},
 };
 
-/// Gap between notes in ms (to avoid legato).
-const uint8_t UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTE_GAP = 20;
-
-/// BPM rate of the song.
-//const uint8_t UNDERTALE_ONCE_UPON_A_TIME_BPM = 100;
-const uint8_t UNDERTALE_ONCE_UPON_A_TIME_BPM = 100;
-
 /// Song with its notes and other settings.
 const Song UNDERTALE_ONCE_UPON_A_TIME_SONG = Song(
         UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES,
         sizeof(UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES) / sizeof(UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[0]),
-        UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTE_GAP,
-        UNDERTALE_ONCE_UPON_A_TIME_BPM
+        50,
+        100
 );
 
-#endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
+#endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H

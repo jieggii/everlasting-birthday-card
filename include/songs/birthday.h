@@ -9,7 +9,7 @@
 #include "../../lib/Song/Song.h"
 
 
-const Note BIRTHDAY_SONG_NOTES[] = {
+const Note BIRTHDAY_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_G3, NoteDuration::EIGHTH},
         {TONE_G3, NoteDuration::EIGHTH},
@@ -52,19 +52,12 @@ const Note BIRTHDAY_SONG_NOTES[] = {
         {TONE_C4, NoteDuration::HALF},
 };
 
-/// Gap between notes in ms (to avoid legato).
-const uint8_t BIRTHDAY_SONG_NOTE_GAP = 10;
-
-/// BPM rate of the song.
-//const uint8_t BIRTHDAY_SONG_BPM = 65;
-const uint8_t BIRTHDAY_SONG_BPM = 120;
-
 /// Song with its notes and other settings.
 const Song BIRTHDAY_SONG = Song(
         BIRTHDAY_SONG_NOTES,
         sizeof(BIRTHDAY_SONG_NOTES) / sizeof(BIRTHDAY_SONG_NOTES[0]),
-        BIRTHDAY_SONG_NOTE_GAP,
-        BIRTHDAY_SONG_BPM
+        30,
+        75
 );
 
 

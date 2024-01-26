@@ -1,14 +1,10 @@
-#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
-#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
-
 /*
     This file contains Undertale: Start menu (4/4).
     Source: https://musescore.com/user/3726186/scores/1864606
 */
 
-
-#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
-#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
+#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
+#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
 
 #include "stdint.h"
 
@@ -17,7 +13,7 @@
 #include "../../lib/Song/Song.h"
 
 
-const Note UNDERTALE_START_MENU_SONG_NOTES[] = {
+const Note UNDERTALE_START_MENU_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_G3,   NoteDuration::EIGHTH},
         {TONE_REST, NoteDuration::EIGHTH},
@@ -121,19 +117,12 @@ const Note UNDERTALE_START_MENU_SONG_NOTES[] = {
         {TONE_REST, NoteDuration::WHOLE}
 };
 
-/// Gap between notes in ms (to avoid legato).
-const uint8_t UNDERTALE_START_MENU_SONG_NOTE_GAP = 20;
-
-/// BPM rate of the song.
-const uint8_t UNDERTALE_START_MENU_SONG_BPM = 181;
-
 /// Song with its notes and other settings.
 const Song UNDERTALE_START_MENU_SONG = Song(
         UNDERTALE_START_MENU_SONG_NOTES,
         sizeof(UNDERTALE_START_MENU_SONG_NOTES) / sizeof(UNDERTALE_START_MENU_SONG_NOTES[0]),
-        UNDERTALE_START_MENU_SONG_NOTE_GAP,
-        UNDERTALE_START_MENU_SONG_BPM
+        20,
+        181
 );
 
-#endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_H
 #endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H

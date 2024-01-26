@@ -10,13 +10,15 @@ class Song {
 public:
     Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm);
 
-    const Note *getNotes() const;
+//    const Note *getNotes() const;
 
     unsigned short getNotesCount() const;
 
     uint8_t getNoteGap() const;
 
     unsigned short getNoteDurationMs(NoteDuration duration) const;
+
+    Note getNote(unsigned short index) const;
 
 
 private:

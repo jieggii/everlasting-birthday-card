@@ -79,16 +79,18 @@ private:
     /// Amount of song being played in a row at the moment.
     unsigned short song_streak = 0;
 
+    /// Current note which is being played.
+    Note song_current_note;
+
     /// Index of the current note in the song.
     uint8_t song_current_note_index = 0;
-
-    /// Timestamp when the current note started playing.
-    unsigned long song_note_start_ts = 0;
 
     /// Duration of a current note in ms.
     unsigned short song_current_note_duration_ms = 0;
 
-    Note const *song_current_note = nullptr;
+    /// Timestamp when the current note started playing.
+    unsigned long song_current_note_start_ts = 0;
+
 
     /// Flag indicating that song must be started.
     bool song_start = false;
