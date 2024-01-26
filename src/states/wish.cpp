@@ -13,7 +13,7 @@
 void wish_setup() {
     LCD.backlight(); // todo remove
 
-    BUZZER.initSong(&UNDERTALE_ONCE_UPON_A_TIME_SONG, 2);
+    BUZZER.initSong(&UNDERTALE_ONCE_UPON_A_TIME_SONG, 1);
 
     // Calculate number of wishes stored in the PROGMEM:
     const uint8_t wishes_count = sizeof(WISHES) / sizeof(WISHES[0]);
@@ -24,9 +24,9 @@ void wish_setup() {
     // Reset index of the current wish to 0 if it is out of range:
     if (wish_index >= wishes_count) {
         wish_index = 0;
-        Serial.println(F("warn: reset wish index to 0 as the stored one is out of range")); // todo remove
+//        Serial.println(F("warn: reset wish index to 0 as the stored one is out of range"));
     }
-    Serial.println("debug: wish with index " + String(wish_index) + " will be displayed"); // todo remove
+//    Serial.println("debug: wish with index " + String(wish_index) + " will be displayed");
 
     // Read current wish and put it into a buffer:
     const char *wish = (const char *) (pgm_read_ptr(&WISHES[wish_index]));

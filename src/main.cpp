@@ -30,11 +30,6 @@ void alarm_interrupt_handler() {
 void setup() {
     Serial.begin(9600);
 
-    // Setup inputs:
-    MICROPHONE.initPin(); // microphone pin
-    DIAGNOSTIC_BUTTON.initPin(); // diagnostic button pin
-    pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
-
     // Setup outputs:
     LCD.init();        // initialize display
     LCD.clear();       // clear display
@@ -44,6 +39,11 @@ void setup() {
     FAILURE_LED.initPin(); // failure LED pin
     BUILTIN_LED.initPin(); // builtin LED pin
     BUZZER.initPin();      // buzzer pin
+
+    // Setup inputs:
+    MICROPHONE.initPin(); // microphone pin
+    DIAGNOSTIC_BUTTON.initPin(); // diagnostic button pin
+    pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
 
     // Initialize DS3231 RTC module:
     if (!RTC.begin()) {
@@ -117,7 +117,26 @@ void setup() {
     }
 }
 
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
+
+int freeMemory() {
+    char top;
+#ifdef __arm__
+    return &top - reinterpret_cast<char*>(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+    return &top - __brkval;
+#else  // __arm__
+    return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+#endif  // __arm__
+}
+
 void loop() {
+    Serial.println(freeMemory());
     switch (ARDUINO_STATE) {
         // Diagnostic states:
         case ArduinoState::DIAGNOSTIC_SETUP:

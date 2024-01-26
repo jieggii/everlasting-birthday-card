@@ -11,7 +11,6 @@ void celebrate_setup() {
     // Setup hardware:
     LCD.backlight();
     CANDLE_LED.turnOn();
-    BUILTIN_LED.turnOn();
     LCD.backlight();
     BUZZER.initSong(&BIRTHDAY_SONG, BIRTHDAY_SONG_REPEAT);
 
@@ -22,7 +21,7 @@ void celebrate_setup() {
     // Initialize scrolling of the congratulation text:
     char buffer[sizeof(CONGRATULATION)]; // note about buffer size: -1 for an extra `%` symbol, +1 to store null-terminator => +0
     snprintf_P(buffer, sizeof(buffer), CONGRATULATION, age);
-    LCD.initScrolling(buffer, 10);
+    LCD.initScrolling(buffer, 2);
 
     ARDUINO_STATE = ArduinoState::CELEBRATE_LOOP;
 }
@@ -39,13 +38,14 @@ void celebrate_loop() {
         if (microphone_triggered) { // if blowing is detected by the microphone
             // turn of candle, gracefully finish scrolling and playing song:
             CANDLE_LED.turnOff();
-            BUILTIN_LED.turnOff();
             LCD.finishScrolling();
             BUZZER.finishSong();
         }
     } else { // if the candle is blown now
         if (BUZZER.getState() == BuzzerState::STANDBY) { // if song has already stopped playing
             LCD.reset();
+            
+            delay(1000);
             ARDUINO_STATE = WISH_SETUP;
         }
     }

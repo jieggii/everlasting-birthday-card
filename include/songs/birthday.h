@@ -56,7 +56,8 @@ const Note BIRTHDAY_SONG_NOTES[] = {
 const uint8_t BIRTHDAY_SONG_NOTE_GAP = 10;
 
 /// BPM rate of the song.
-const uint8_t BIRTHDAY_SONG_BPM = 65;
+//const uint8_t BIRTHDAY_SONG_BPM = 65;
+const uint8_t BIRTHDAY_SONG_BPM = 120;
 
 /// Song with its notes and other settings.
 const Song BIRTHDAY_SONG = Song(
