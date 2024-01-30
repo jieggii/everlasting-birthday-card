@@ -3,7 +3,6 @@
 
 #include "LiquidCrystal_I2C.h"
 
-
 const uint8_t DISPLAY_ROWS = 2;
 const uint8_t DISPLAY_COLS = 16;
 

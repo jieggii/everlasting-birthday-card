@@ -5,7 +5,6 @@
 
 #include "celebrate.h"
 
-
 void celebrate_setup() {
     LCD.backlight();
     CANDLE_LED.turnOn();

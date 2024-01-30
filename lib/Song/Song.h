@@ -5,7 +5,6 @@
 
 #include "Note.h"
 
-
 /// Represents song which should be played using buzzer.
 class Song {
 public:

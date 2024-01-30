@@ -9,7 +9,6 @@
 
 #include "birthday.h"
 
-
 const Note BIRTHDAY_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_G3,   NoteDuration::EIGHTH},

@@ -9,7 +9,6 @@
 
 #include "undertale_once_upon_a_time.h"
 
-
 const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_C5,   NoteDuration::HALF},

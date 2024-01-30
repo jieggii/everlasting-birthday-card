@@ -6,7 +6,6 @@
 
 #include "home.h"
 
-
 unsigned short HOME_DISPLAY_INTERVAL = 1000;
 unsigned long HOME_LAST_DISPLAY_MILLIS = 0;
 

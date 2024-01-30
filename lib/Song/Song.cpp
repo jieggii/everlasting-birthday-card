@@ -2,7 +2,6 @@
 
 #include "Song.h"
 
-
 Song::Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm,
            uint8_t quarters_count) {
     this->notes = notes;

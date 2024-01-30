@@ -10,7 +10,6 @@
 #include "Display.h"
 #include "Button.h"
 
-
 /// The LCD used to display wishes and other text information.
 extern Display LCD;
 

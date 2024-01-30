@@ -1,7 +1,6 @@
 #include "Microphone.h"
 #include "Arduino.h"
 
-
 Microphone::Microphone(uint8_t pin) : pin(pin) {
     this->trigger_streak = 0;
 }

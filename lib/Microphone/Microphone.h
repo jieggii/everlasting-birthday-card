@@ -3,7 +3,6 @@
 
 #include "stdint.h"
 
-
 /// Represents a physical microphone module.
 class Microphone {
 public:

@@ -9,7 +9,6 @@
 
 #include "undertale_start_menu.h"
 
-
 const Note UNDERTALE_START_MENU_SONG_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_G3,   NoteDuration::EIGHTH},

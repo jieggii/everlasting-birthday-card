@@ -9,7 +9,6 @@
 
 #include "undertale_fallen_down.h"
 
-
 const Note UNDERTALE_FALLEN_DOWN_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_Gb5,  NoteDuration::EIGHTH},

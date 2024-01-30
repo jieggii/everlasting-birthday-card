@@ -1,7 +1,6 @@
 #include "Buzzer.h"
 #include "Arduino.h"
 
-
 Buzzer::Buzzer(uint8_t pin) : pin(pin), song(nullptr) {}
 
 /// Sets OUTPUT mode for the buzzer pin.

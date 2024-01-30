@@ -1,7 +1,6 @@
 #ifndef EVERLASTING_BIRTHDAY_CARD_LED_H
 #define EVERLASTING_BIRTHDAY_CARD_LED_H
 
-
 /// Represents a physical LED.
 class LED {
 public:

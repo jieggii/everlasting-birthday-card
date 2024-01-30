@@ -9,7 +9,6 @@
 
 #include "undertale_your_best_friend.h"
 
-
 const Note UNDERTALE_YOUR_BEST_FRIEND_NOTES[] PROGMEM = {
         // Bar 1:
         {TONE_Ab4,  NoteDuration::EIGHTH},

@@ -7,7 +7,6 @@
 
 #include "wish.h"
 
-
 void wish_setup() {
     LCD.backlight(); // todo remove
 

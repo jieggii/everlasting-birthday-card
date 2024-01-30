@@ -5,7 +5,6 @@
 
 #include "goodbye.h"
 
-
 void goodbye_setup() {
     LCD.clear();
 

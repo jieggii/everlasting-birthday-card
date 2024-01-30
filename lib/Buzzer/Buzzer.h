@@ -4,7 +4,6 @@
 #include "stdint.h"
 #include "../Song/Song.h"
 
-
 enum BuzzerState {
     /// The default stand by mode, nothing is being played.
     STANDBY,

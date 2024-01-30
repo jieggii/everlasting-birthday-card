@@ -2,14 +2,13 @@
 
 #include "RTClib.h"
 
+#include "pinout.h"
+
 #include "Buzzer.h"
 #include "Microphone.h"
 #include "LED.h"
 #include "Display.h"
 #include "Button.h"
-
-#include "pinout.h"
-
 
 Display LCD(LCD_ADDRESS, 16, 2);
 Microphone MICROPHONE(MICROPHONE_PIN);

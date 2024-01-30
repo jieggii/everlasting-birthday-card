@@ -5,7 +5,6 @@
 
 #include "countdown.h"
 
-
 void countdown_setup() {
     // clear the screen disable backlight:
     LCD.clear();

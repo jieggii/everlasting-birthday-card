@@ -15,7 +15,6 @@
 #include "states/wish.h"
 #include "states/goodbye.h"
 
-
 /// Handles DS3231 alarm interrupt: detaches interrupt pin to avoid
 /// the ISR to be called again, puts Arduino into HANDLE_ALARM_INTERRUPT state.
 void alarm_interrupt_handler() {

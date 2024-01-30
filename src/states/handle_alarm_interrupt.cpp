@@ -4,7 +4,6 @@
 
 #include "handle_alarm_interrupt.h"
 
-
 void handle_alarm_interrupt() {
     // clear alarm flag in order to set interrupt pin back to HIGH state:
     RTC.clearAlarm(1);

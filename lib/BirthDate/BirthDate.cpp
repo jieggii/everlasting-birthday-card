@@ -2,7 +2,6 @@
 
 #include "BirthDate.h"
 
-
 BirthDate::BirthDate(
         uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec
 ) : DateTime(year, month, day, hour, min, sec) {}
