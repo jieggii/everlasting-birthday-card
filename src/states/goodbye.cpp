@@ -9,9 +9,10 @@ void goodbye_setup() {
     LCD.clear();
 
     char buffer[GOODBYE_TEXT_BUFSIZE];
-    strcpy_P(buffer, GOODBYE_TEXT);
+    strncpy_P(buffer, GOODBYE_TEXT, sizeof(buffer));
 
-    LCD.initScrolling(buffer, 1);
+    LCD.initScrolling(buffer, 2);
+
     ARDUINO_STATE = ArduinoState::GOODBYE_LOOP;
 }
 

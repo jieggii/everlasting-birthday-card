@@ -1,17 +1,42 @@
 #include "Display.h"
 #include "Arduino.h"
 
+const char ERROR_LITERAL[] PROGMEM = "ERROR:";
+const char INFO_LITERAL[] PROGMEM = "INFO:";
+
+/// Fulfills a buffer with space (' ') characters, ensures proper 0-termination.
+/// Note: buffer must be of length LCD_COLS + 1.
+/// Example (considering that LCD_COLS is equal to 16):
+/// "hello" will be fulfilled to "hello           ".
+void fulfillRowBuffer(char *buffer) {
+    // find 0-terminator index:
+    uint8_t terminator_index = 0;
+    for (uint8_t i = 0; i <= LCD_COLS; i++) {
+        if (buffer[i] == '\0') {
+            terminator_index = i;
+            break;
+        }
+    }
+    // fulfill buffer with spaces:
+    for (uint8_t i = terminator_index; i < LCD_COLS; i++) {
+        Serial.println("set ' ': " + String(i));
+        buffer[i] = ' ';
+    }
+    // add 0-terminator in the end of the buffer
+    buffer[LCD_COLS] = '\0';
+}
+
 Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
         LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows) {
 }
 
 /// Displays text of maximal length of 32 characters using first and second row of the LCD.
 void Display::display(const char *text, uint8_t shift = 0) {
-    char row1[DISPLAY_COLS + 1];
-    char row2[DISPLAY_COLS + 1];
+    char row1[LCD_COLS + 1];
+    char row2[LCD_COLS + 1];
 
     bool met_terminator = false;
-    for (uint8_t i = 0; i < DISPLAY_COLS * DISPLAY_ROWS; i++) {
+    for (uint8_t i = 0; i < LCD_COLS * LCD_ROWS; i++) {
         if (text[i + shift] == '\0') {
             met_terminator = true;
         }
@@ -23,20 +48,20 @@ void Display::display(const char *text, uint8_t shift = 0) {
             symbol = text[i + shift];
         }
 
-        if (i < DISPLAY_COLS) {
+        if (i < LCD_COLS) {
             row1[i] = symbol;
         } else {
-            row2[i - DISPLAY_COLS] = symbol;
+            row2[i - LCD_COLS] = symbol;
         }
     }
 
-    row1[DISPLAY_COLS] = '\0';
-    row2[DISPLAY_COLS] = '\0';
+    row1[LCD_COLS] = '\0';
+    row2[LCD_COLS] = '\0';
 
     this->displayRows(row1, row2);
 }
 
-/// Displays text in both rows separately.
+/// Displays text in both rows separately. Both rows must be strings.
 void Display::displayRows(const char *row1, const char *row2) {
     this->setCursor(0, 0);
     this->print(row1);
@@ -44,7 +69,7 @@ void Display::displayRows(const char *row1, const char *row2) {
     this->print(row2);
 }
 
-/// Displays text in both rows separately. The first row must be a string stored in PROGMEM and the second must be a F-string.
+/// Displays text in both rows separately. The first row must be a string stored in PROGMEM and the second must be a flash-string
 void Display::displayRows_P_F(const char *row1, const __FlashStringHelper *row2) {
     char row1_buffer[strlen_P(row1) + 1];
     strcpy_P(row1_buffer, row1);
@@ -54,17 +79,6 @@ void Display::displayRows_P_F(const char *row1, const __FlashStringHelper *row2)
     this->setCursor(0, 1);
     this->print(row2);
 }
-
-
-/// Displays text stored in PROGMEM in both rows separately.
-//void Display::displayRows_P(const char *row1, const char *row2) {
-//    char row1_buffer[strlen_P(row1) + 1];
-//    char row2_buffer[strlen_P(row2) + 1];
-//    strcpy_P(row1_buffer, row1);
-//    strcpy_P(row2_buffer, row2);
-//
-//    this->displayRows(row1_buffer, row2_buffer);
-//}
 
 /// Displays an error message.
 void Display::displayError(const __FlashStringHelper *message) {
@@ -111,7 +125,6 @@ void Display::handleScrolling(unsigned short first_frame_duration, unsigned shor
             this->next_frame_start_ts = now + frame_duration;
         }
 
-        this->clear(); // todo: try toggling (when wish is displaying)
         this->display(this->scrolling_text, this->frame_start);
 
         if (this->frame_start == this->scrolling_text_length) {

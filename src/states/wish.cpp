@@ -15,19 +15,19 @@ void wish_setup() {
 
     // read index of the current wish:
     uint8_t wish_index = EEPROM.read(WISH_INDEX_EEPROM_ADDRESS);
-//    Serial.println("dbg: number of wishes = " + String(WISHES_LEN));
+//    Serial.println("debug: number of wishes = " + String(WISHES_LEN));
 
     // reset index of the current wish to 0 if it is out of range (just in case):
     if (wish_index > WISHES_COUNT - 1) {
         wish_index = 0;
-//        Serial.println(F("dbg: reset wish index to 0 as the stored one is out of range"));
+//        Serial.println(F("debug: reset wish index to 0 as the stored one is out of range"));
     }
-//    Serial.println("dbg: wish with index " + String(wish_index) + " will be displayed");
+//    Serial.println("debug: wish with index " + String(wish_index) + " will be displayed");
 
     // read current wish and put it into a buffer:
     const char *wish = (const char *) (pgm_read_ptr(&WISHES[wish_index]));
     char buffer[WISH_TEXT_BUFSIZE];
-    strcpy_P(buffer, wish);
+    strncpy_P(buffer, wish, sizeof(buffer));
 
     // initialize wish scrolling on the LCD:
     LCD.initScrolling(buffer, WISH_SCROLL_REPEAT);

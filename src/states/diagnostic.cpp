@@ -32,8 +32,8 @@ void diagnostic_loop() {
     unsigned long current_millis = millis();
     if (current_millis - DIAGNOSTIC_LAST_DISPLAY_MILLIS >= DIAGNOSTIC_DISPLAY_INTERVAL) {
         // buffers holding information that will be displayed in the LCD:
-        char row1[16 + 1];
-        char row2[16 + 1];
+        char row1[LCD_COLS + 1];
+        char row2[LCD_COLS + 1];
 
         const DateTime now = RTC.now(); // current datetime
         const DateTime alarm = RTC.getAlarm1(); // alarm datetime
@@ -68,9 +68,13 @@ void diagnostic_loop() {
                     now.minute(),
                     now.second()
             );
-            sprintf(row2, "Wish index: %d", EEPROM.read(WISH_INDEX_EEPROM_ADDRESS));
+            snprintf(row2, sizeof(row2), "Wish index: %d", EEPROM.read(WISH_INDEX_EEPROM_ADDRESS));
         }
+
+        fulfillRowBuffer(row1);
+        fulfillRowBuffer(row2);
         LCD.displayRows(row1, row2);
+
         DIAGNOSTIC_LAST_DISPLAY_MILLIS = current_millis;
     }
 }

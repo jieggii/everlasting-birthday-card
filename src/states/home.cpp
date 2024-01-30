@@ -29,16 +29,16 @@ void home_loop() {
     unsigned long current_millis = millis();
     if (current_millis - HOME_LAST_DISPLAY_MILLIS >= HOME_DISPLAY_INTERVAL) {
         // buffers holding information which will be displayed in the display:
-        char row1[16 + 1];
-        char row2[16 + 1];
+        char row1[LCD_COLS + 1];
+        char row2[LCD_COLS + 1];
 
         const DateTime now = RTC.now();
 
         if (CONTROL_BUTTON.isPressed()) {
             const float temperature = RTC.getTemperature();
             char temperature_buffer[5];
-
             dtostrf(temperature, 2, 2, temperature_buffer);
+
             snprintf_P(
                     row1, sizeof(row1), DATE_FORMAT_LITERAL,
                     now.day(),
@@ -48,7 +48,6 @@ void home_loop() {
                     now.minute(),
                     now.second()
             );
-            //  (char) 223
             snprintf(row2, sizeof(row2), "temp: %s%cC   ", temperature_buffer, (char) 223);
         } else {
             const DateTime birthday = BIRTH_DATE.nextBirthday(now);
@@ -59,9 +58,12 @@ void home_loop() {
                     row2, sizeof(row2), "    %02d:%02d:%02d    ",
                     time_left.hours(), time_left.minutes(), time_left.seconds()
             );
-
         }
+
+        fulfillRowBuffer(row1);
+        fulfillRowBuffer(row2);
         LCD.displayRows(row1, row2);
+
         HOME_LAST_DISPLAY_MILLIS = current_millis;
     }
 }

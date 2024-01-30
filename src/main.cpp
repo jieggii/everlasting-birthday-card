@@ -35,7 +35,6 @@ void setup() {
 
     CANDLE_LED.initPin();  // candle LED pin
     FAILURE_LED.initPin(); // failure LED pin
-    BUILTIN_LED.initPin(); // builtin LED pin
     BUZZER.initPin();      // buzzer pin
 
     // Setup inputs:
