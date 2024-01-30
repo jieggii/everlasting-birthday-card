@@ -3,14 +3,13 @@
 
 #include "pinout.h"
 #include "settings.h"
-#include "literals.h"
 
 #include "globals/hardware.h"
 #include "globals/state.h"
 
 #include "states/diagnostic.h"
 #include "states/home.h"
-#include "states/check_month.h"
+#include "states/handle_alarm_interrupt.h"
 #include "states/countdown.h"
 #include "states/celebrate.h"
 #include "states/wish.h"
@@ -18,13 +17,13 @@
 
 
 /// Handles DS3231 alarm interrupt: detaches interrupt pin to avoid
-/// the ISR to be called again, puts Arduino into CHECK_MONTH state.
+/// the ISR to be called again, puts Arduino into HANDLE_ALARM_INTERRUPT state.
 void alarm_interrupt_handler() {
     detachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN));
 
-    // Change state to CHECK_MONTH in order to check if the current month matches with the
+    // Change state to HANDLE_ALARM_INTERRUPT in order to check if the current month matches with the
     // birthday month. This logic is needed as DS3231 has no support for annual alarms.
-    ARDUINO_STATE = ArduinoState::CHECK_MONTH;
+    ARDUINO_STATE = ArduinoState::HANDLE_ALARM_INTERRUPT;
 }
 
 void setup() {
@@ -42,7 +41,7 @@ void setup() {
 
     // Setup inputs:
     MICROPHONE.initPin(); // microphone pin
-    DIAGNOSTIC_BUTTON.initPin(); // diagnostic button pin
+    CONTROL_BUTTON.initPin(); // diagnostic button pin
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
 
     // Initialize DS3231 RTC module:
@@ -50,7 +49,7 @@ void setup() {
         FAILURE_LED.turnOn();
 
         LCD.backlight();
-        LCD.displayError_P(ERROR_RTC_NOT_FOUND);
+        LCD.displayError(F("RTC not found"));
 
         while (true);
     }
@@ -61,7 +60,7 @@ void setup() {
         RTC.adjust(compilation_time);
 
         LCD.backlight();
-        LCD.displayInfo_P(INFO_RTC_ADJUSTED);
+        LCD.displayInfo(F("RTC adjusted"));
 
         /// after flashing firmware with RTC_RESET set to true and adjusting the datetime
         /// you need to rebuild and flash the firmware with RTC_RESET flag set to false.
@@ -73,7 +72,7 @@ void setup() {
         FAILURE_LED.turnOn();
 
         LCD.backlight();
-        LCD.displayError_P(ERROR_RTC_LOST_POWER);
+        LCD.displayError(F("RTC lost power"));
 
         while (true);
     }
@@ -92,7 +91,7 @@ void setup() {
         FAILURE_LED.turnOn();
 
         LCD.backlight();
-        LCD.displayError_P(ERROR_RTC_SET_ALARM_FAILED);
+        LCD.displayError(F("set alarm failed"));
 
         while (true);
     }
@@ -105,12 +104,12 @@ void setup() {
         EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, WISH_INDEX_RESET_TO);
 
         LCD.backlight();
-        LCD.displayInfo_P(INFO_WISH_INDEX_RESET);
+        LCD.displayInfo(F("wish index reset"));
 
         while (true);
     }
 
-    if (DIAGNOSTIC_BUTTON.isPressed()) {
+    if (CONTROL_BUTTON.isPressed()) {
         ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
     } else {
         ARDUINO_STATE = ArduinoState::HOME_SETUP;
@@ -136,7 +135,7 @@ int freeMemory() {
 }
 
 void loop() {
-    Serial.println(freeMemory());
+//    Serial.println(freeMemory());
     switch (ARDUINO_STATE) {
         // Diagnostic states:
         case ArduinoState::DIAGNOSTIC_SETUP:
@@ -155,9 +154,9 @@ void loop() {
             home_loop();
             break;
 
-            // Check month state:
-        case ArduinoState::CHECK_MONTH:
-            check_month();
+            // Handle alarm interrupt state:
+        case ArduinoState::HANDLE_ALARM_INTERRUPT:
+            handle_alarm_interrupt();
             break;
 
             // Countdown states:

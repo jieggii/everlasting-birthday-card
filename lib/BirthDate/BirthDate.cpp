@@ -1,6 +1,6 @@
-#include "BirthDate.h"
-
 #include "RTClib.h"
+
+#include "BirthDate.h"
 
 
 BirthDate::BirthDate(

@@ -1,5 +1,4 @@
 #include "settings.h"
-#include "songs/birthday.h"
 
 #include "globals/hardware.h"
 #include "globals/state.h"
@@ -8,29 +7,28 @@
 
 
 void celebrate_setup() {
-    // Setup hardware:
     LCD.backlight();
     CANDLE_LED.turnOn();
-    LCD.backlight();
-    BUZZER.initSong(&BIRTHDAY_SONG, BIRTHDAY_SONG_REPEAT);
+    BUZZER.initSong(CELEBRATE_SONG, CELEBRATE_SONG_REPEAT);
 
     // Calculate person's age at the moment:
     const DateTime now = RTC.now();
     const uint8_t age = now.year() - BIRTH_DATE.year();
 
     // Initialize scrolling of the congratulation text:
-    char buffer[sizeof(CONGRATULATION)]; // note about buffer size: -1 for an extra `%` symbol, +1 to store null-terminator => +0
-    snprintf_P(buffer, sizeof(buffer), CONGRATULATION, age);
+    char buffer[CELEBRATE_TEXT_BUFSIZE];
+    snprintf_P(buffer, sizeof(buffer), CELEBRATE_TEXT, age);
     LCD.initScrolling(buffer, 2);
 
     ARDUINO_STATE = ArduinoState::CELEBRATE_LOOP;
+
 }
 
 void celebrate_loop() {
     // play song and scroll congratulation text:
     BUZZER.handle();
     LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
-
+    Serial.println(LCD.scrolling_text);
     if (CANDLE_LED.isPowered()) { // if candle is still turned on
         bool microphone_triggered = MICROPHONE.isTriggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK
@@ -44,7 +42,7 @@ void celebrate_loop() {
     } else { // if the candle is blown now
         if (BUZZER.getState() == BuzzerState::STANDBY) { // if song has already stopped playing
             LCD.reset();
-            
+
             delay(1000);
             ARDUINO_STATE = WISH_SETUP;
         }

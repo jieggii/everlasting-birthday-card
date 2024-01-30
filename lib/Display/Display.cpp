@@ -7,11 +7,11 @@ Display::Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows) :
 
 /// Displays text of maximal length of 32 characters using first and second row of the LCD.
 void Display::display(const char *text, uint8_t shift = 0) {
-    char row1_buffer[DISPLAY_COLS + 1];
-    char row2_buffer[DISPLAY_COLS + 1];
+    char row1[DISPLAY_COLS + 1];
+    char row2[DISPLAY_COLS + 1];
 
     bool met_terminator = false;
-    for (unsigned short i = 0; i < DISPLAY_COLS * DISPLAY_ROWS; i++) {
+    for (uint8_t i = 0; i < DISPLAY_COLS * DISPLAY_ROWS; i++) {
         if (text[i + shift] == '\0') {
             met_terminator = true;
         }
@@ -24,16 +24,16 @@ void Display::display(const char *text, uint8_t shift = 0) {
         }
 
         if (i < DISPLAY_COLS) {
-            row1_buffer[i] = symbol;
+            row1[i] = symbol;
         } else {
-            row2_buffer[i - DISPLAY_COLS] = symbol;
+            row2[i - DISPLAY_COLS] = symbol;
         }
     }
 
-    row1_buffer[DISPLAY_COLS] = '\0';
-    row2_buffer[DISPLAY_COLS] = '\0';
+    row1[DISPLAY_COLS] = '\0';
+    row2[DISPLAY_COLS] = '\0';
 
-    this->displayRows(row1_buffer, row2_buffer);
+    this->displayRows(row1, row2);
 }
 
 /// Displays text in both rows separately.
@@ -44,31 +44,36 @@ void Display::displayRows(const char *row1, const char *row2) {
     this->print(row2);
 }
 
-//void Display::displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2) {
-//    this->setCursor(0, 0);
-//    this->print(row1);
-//    this->setCursor(0, 1);
-//    this->print(row2);
-//}
-
-/// Displays text stored in PROGMEM in both rows separately.
-void Display::displayRows_P(const char *row1, const char *row2) {
+/// Displays text in both rows separately. The first row must be a string stored in PROGMEM and the second must be a F-string.
+void Display::displayRows_P_F(const char *row1, const __FlashStringHelper *row2) {
     char row1_buffer[strlen_P(row1) + 1];
-    char row2_buffer[strlen_P(row2) + 1];
     strcpy_P(row1_buffer, row1);
-    strcpy_P(row2_buffer, row2);
 
-    this->displayRows(row1_buffer, row2_buffer);
+    this->setCursor(0, 0);
+    this->print(row1_buffer);
+    this->setCursor(0, 1);
+    this->print(row2);
 }
 
-/// Displays an error message stored in PROGMEM.
-void Display::displayError_P(const char *message) {
-    this->displayRows_P(ERROR_LITERAL, message);
+
+/// Displays text stored in PROGMEM in both rows separately.
+//void Display::displayRows_P(const char *row1, const char *row2) {
+//    char row1_buffer[strlen_P(row1) + 1];
+//    char row2_buffer[strlen_P(row2) + 1];
+//    strcpy_P(row1_buffer, row1);
+//    strcpy_P(row2_buffer, row2);
+//
+//    this->displayRows(row1_buffer, row2_buffer);
+//}
+
+/// Displays an error message.
+void Display::displayError(const __FlashStringHelper *message) {
+    this->displayRows_P_F(ERROR_LITERAL, message);
 }
 
 /// Displays information message stored in PROGMEM.
-void Display::displayInfo_P(const char *message) {
-    this->displayRows_P(INFO_LITERAL, message);
+void Display::displayInfo(const __FlashStringHelper *message) {
+    this->displayRows_P_F(INFO_LITERAL, message);
 }
 
 /// Sets up scrolling settings, put display into scrolling state.

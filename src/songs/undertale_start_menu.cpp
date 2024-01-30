@@ -3,14 +3,11 @@
     Source: https://musescore.com/user/3726186/scores/1864606
 */
 
-#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
-#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H
-
-#include "stdint.h"
-
 #include "avr/pgmspace.h"
-#include "../../lib/Note/Note.h"
-#include "../../lib/Song/Song.h"
+
+#include "Song.h"
+
+#include "undertale_start_menu.h"
 
 
 const Note UNDERTALE_START_MENU_SONG_NOTES[] PROGMEM = {
@@ -122,7 +119,7 @@ const Song UNDERTALE_START_MENU_SONG = Song(
         UNDERTALE_START_MENU_SONG_NOTES,
         sizeof(UNDERTALE_START_MENU_SONG_NOTES) / sizeof(UNDERTALE_START_MENU_SONG_NOTES[0]),
         20,
-        181
+        181,
+        4
 );
 
-#endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_START_MENU_H

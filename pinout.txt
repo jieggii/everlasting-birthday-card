@@ -1,8 +1,8 @@
-1. I2C LCD:
+1. 16x2 LCD (I2C):
     SDA -> SDA (2)
     SCL -> SCL (3)
 
-2. I2C DS3231 RTC:
+2. DS3231 RTC (I2C):
     SDA -> SDA (2)
     SCL -> SCL (3)
     SQW -> 7

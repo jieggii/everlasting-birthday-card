@@ -2,11 +2,11 @@
 
 #include "RTClib.h"
 
-#include "../lib/Buzzer/Buzzer.h"
-#include "../lib/Microphone/Microphone.h"
-#include "../lib/LED/LED.h"
-#include "../lib/Display/Display.h"
-#include "../lib/Button/Button.h"
+#include "Buzzer.h"
+#include "Microphone.h"
+#include "LED.h"
+#include "Display.h"
+#include "Button.h"
 
 #include "pinout.h"
 
@@ -16,6 +16,5 @@ Microphone MICROPHONE(MICROPHONE_PIN);
 Buzzer BUZZER(BUZZER_PIN);
 LED CANDLE_LED(CANDLE_LED_PIN);
 LED FAILURE_LED(FAILURE_LED_PIN);
-LED BUILTIN_LED(LED_BUILTIN); // todo: is it needed?
-Button DIAGNOSTIC_BUTTON(DIAGNOSTIC_BUTTON_PIN);
+Button CONTROL_BUTTON(DIAGNOSTIC_BUTTON_PIN);
 RTC_DS3231 RTC;

@@ -3,13 +3,14 @@
 
 #include "stdint.h"
 
+
 /// Represents a physical microphone module.
 class Microphone {
 public:
     explicit Microphone(uint8_t pin);
 
     void initPin() const;
-    
+
     bool isTriggered(unsigned short treshold, uint8_t streak);
 
 private:

@@ -1,12 +1,11 @@
 #include "settings.h"
-
 #include "globals/hardware.h"
 #include "globals/state.h"
 
-#include "check_month.h"
+#include "handle_alarm_interrupt.h"
 
 
-void check_month() {
+void handle_alarm_interrupt() {
     // clear alarm flag in order to set interrupt pin back to HIGH state:
     RTC.clearAlarm(1);
 

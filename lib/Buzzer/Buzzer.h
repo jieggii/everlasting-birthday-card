@@ -31,25 +31,25 @@ public:
 
     void initSong(const Song *song, uint8_t count);
 
-    void initTick(int interval, int duration, int tone, uint8_t count);
+    void initTick(unsigned short interval, unsigned short duration, unsigned short tone, uint8_t count);
 
     void finishSong();
 
-    /// General method to handle buzzer.
     void handle();
-
 
 private:
     /// Output pin number.
     uint8_t pin;
 
     /// Current buzzer state.
-    BuzzerState state = STANDBY;
+    BuzzerState state = BuzzerState::STANDBY;
 
     /// Is true when buzzer is producing sound, false when buzzer is silent.
     bool is_playing = false;
 
-    // Related to BUZZER_STATE_TICK state:
+    /*
+        Related to BUZZER_STATE_TICK state:
+    */
     /// Amount of ticks to be played.
     uint8_t tick_count = 0;
 
@@ -68,18 +68,20 @@ private:
     /// Timestamp when the current tick started.
     unsigned long tick_start_ts = 0;
 
-
-    // Related to BUZZER_STATE_SONG state:
+    /*
+        Related to BUZZER_STATE_SONG state:
+    */
     /// Song which is being played by the buzzer.
     Song const *song;
 
     /// Amount of times song must be played.
-    unsigned short song_count = 0;
+    uint8_t song_count = 0;
 
     /// Amount of song being played in a row at the moment.
-    unsigned short song_streak = 0;
+    uint8_t song_streak = 0;
 
     /// Current note which is being played.
+//    Note song_current_note = Note{};
     Note song_current_note;
 
     /// Index of the current note in the song.
@@ -90,7 +92,6 @@ private:
 
     /// Timestamp when the current note started playing.
     unsigned long song_current_note_start_ts = 0;
-
 
     /// Flag indicating that song must be started.
     bool song_start = false;

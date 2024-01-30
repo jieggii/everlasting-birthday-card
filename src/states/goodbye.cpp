@@ -5,18 +5,19 @@
 
 #include "goodbye.h"
 
+
 void goodbye_setup() {
     LCD.clear();
 
-    char buffer[strlen_P(GOODBYE_TEXT) + 1];
+    char buffer[GOODBYE_TEXT_BUFSIZE];
     strcpy_P(buffer, GOODBYE_TEXT);
-    LCD.initScrolling(buffer, 1);
 
+    LCD.initScrolling(buffer, 1);
     ARDUINO_STATE = ArduinoState::GOODBYE_LOOP;
 }
 
 void goodbye_loop() {
-    LCD.handleScrolling(1000, 500);
+    LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FIRST_FRAME_DURATION);
     if (!LCD.isScrolling()) {
         LCD.noBacklight();
         delay(1500);

@@ -3,13 +3,11 @@
     Source: https://musescore.com/user/5771981/scores/1407296.
 */
 
-#ifndef EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H
-#define EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H
+#include "avr/pgmspace.h"
 
-#include "stdint.h"
+#include "Song.h"
 
-#include "../../lib/Note/Note.h"
-#include "../../lib/Song/Song.h"
+#include "undertale_once_upon_a_time.h"
 
 
 const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] PROGMEM = {
@@ -230,14 +228,17 @@ const Note UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[] PROGMEM = {
         {TONE_G4,   NoteDuration::QUARTER},
         {TONE_F4,   NoteDuration::QUARTER},
         {TONE_C4,   NoteDuration::QUARTER},
+
+        // Bar 38:
+        {TONE_REST, NoteDuration::WHOLE},
+
 };
 
-/// Song with its notes and other settings.
 const Song UNDERTALE_ONCE_UPON_A_TIME_SONG = Song(
         UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES,
         sizeof(UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES) / sizeof(UNDERTALE_ONCE_UPON_A_TIME_SONG_NOTES[0]),
         50,
-        100
+        130,
+        4
 );
 
-#endif //EVERLASTING_BIRTHDAY_CARD_UNDERTALE_ONCE_UPON_A_TIME_H

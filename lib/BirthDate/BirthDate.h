@@ -3,7 +3,7 @@
 
 #include "RTClib.h"
 
-/// Represents the date of a person's birth.
+/// Represents a date of a person's birth.
 class BirthDate : public DateTime {
 public:
     BirthDate(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec);

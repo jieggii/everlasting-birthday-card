@@ -5,6 +5,7 @@
 
 #include "countdown.h"
 
+
 void countdown_setup() {
     // clear the screen disable backlight:
     LCD.clear();
@@ -15,7 +16,7 @@ void countdown_setup() {
             COUNTDOWN_TICK_INTERVAL,
             COUNTDOWN_TICK_DURATION,
             COUNTDOWN_TICK_TONE,
-            COUNTDOWN_TICK_COUNT
+            COUNTDOWN_TICKS_COUNT
     );
 
     ARDUINO_STATE = ArduinoState::COUNTDOWN_LOOP;

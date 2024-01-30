@@ -3,14 +3,13 @@
 
 #include "stdint.h"
 
-#include "../Note/Note.h"
+#include "Note.h"
+
 
 /// Represents song which should be played using buzzer.
 class Song {
 public:
-    Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm);
-
-//    const Note *getNotes() const;
+    Song(const Note *notes, unsigned short notes_count, uint8_t note_gap, unsigned short bpm, uint8_t quarters_count);
 
     unsigned short getNotesCount() const;
 
@@ -45,6 +44,9 @@ private:
 
     /// Duration of a sixteenth note in ms.
     unsigned short sixteenth_duration;
+
+    /// Duration of a thiry-second note in ms.
+    unsigned short thirty_second_duration;
 };
 
 #endif //EVERLASTING_BIRTHDAY_CARD_SONG_H

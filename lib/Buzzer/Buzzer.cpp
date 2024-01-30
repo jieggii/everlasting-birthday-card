@@ -38,7 +38,7 @@ void Buzzer::initSong(const Song *song, uint8_t count) {
 }
 
 /// Sets up ticking settings, puts buzzer into PLAYING_TICK state.
-void Buzzer::initTick(int interval, int duration, int tone, uint8_t count) {
+void Buzzer::initTick(unsigned short interval, unsigned short duration, unsigned short tone, uint8_t count) {
     this->tick_interval = interval;
     this->tick_duration = duration;
     this->tick_tone = tone;
@@ -136,7 +136,7 @@ void Buzzer::handleSong() {
                this->is_playing) { // if it is time to finish current note
         this->noTone();
         this->is_playing = false;
-        Serial.println("stop note " + String(this->song_current_note_index));
+//        Serial.println("stop note " + String(this->song_current_note_index));
     }
 }
 

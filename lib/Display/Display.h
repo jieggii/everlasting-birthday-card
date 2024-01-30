@@ -3,6 +3,7 @@
 
 #include "LiquidCrystal_I2C.h"
 
+
 const uint8_t DISPLAY_ROWS = 2;
 const uint8_t DISPLAY_COLS = 16;
 
@@ -13,6 +14,9 @@ const char INFO_LITERAL[] PROGMEM = "INFO:";
 /// Represents a 16x2 LCD display.
 class Display : public LiquidCrystal_I2C {
 public:
+    /// Text which will be scrolled.
+    const char *scrolling_text = nullptr;
+
     Display(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
 
     void display(const char *text, uint8_t shift);
@@ -21,11 +25,13 @@ public:
 
 //    void displayRows(const __FlashStringHelper *row1, const __FlashStringHelper *row2);
 
-    void displayRows_P(const char *row1, const char *row2);
+    void displayRows_P_F(const char *row1, const __FlashStringHelper *row2);
 
-    void displayError_P(const char *message);
+//    void displayRows_P(const char *row1, const char *row2);
 
-    void displayInfo_P(const char *message);
+    void displayError(const __FlashStringHelper *message);
+
+    void displayInfo(const __FlashStringHelper *message);
 
     void initScrolling(const char *text, uint8_t count);
 
@@ -42,8 +48,6 @@ private:
     /// Is true when scrolling text, false when not.
     bool is_scrolling = false;
 
-    /// Text which will be scrolled.
-    const char *scrolling_text = nullptr;
 
     /// Length of the text being scrolled.
     unsigned short scrolling_text_length = 0;
