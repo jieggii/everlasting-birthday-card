@@ -68,7 +68,7 @@ void diagnostic_loop() {
                     now.minute(),
                     now.second()
             );
-            snprintf(row2, sizeof(row2), "Wish index: %d", EEPROM.read(WISH_INDEX_EEPROM_ADDRESS));
+            snprintf(row2, sizeof(row2), "Wish i: %d/%d", EEPROM.read(WISH_INDEX_EEPROM_ADDRESS), WISHES_COUNT);
         }
 
         fulfillRowBuffer(row1);
