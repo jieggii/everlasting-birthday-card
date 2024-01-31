@@ -1,4 +1,5 @@
 #include "literals.h"
+#include "pinout.h"
 
 #include "settings.h"
 #include "globals/hardware.h"
@@ -12,10 +13,10 @@ unsigned long HOME_LAST_DISPLAY_MILLIS = 0;
 
 void home_setup() {
     // initialize random generator:
-    randomSeed(analogRead(5));
+    randomSeed(analogRead(RANDOM_PIN));
 
     // initialize buzzer with a random song:
-    uint8_t song_index = random(0, (HOME_SONGS_COUNT));
+    uint8_t song_index = random(0, HOME_SONGS_COUNT);
     const Song *song = HOME_SONGS[song_index];
     BUZZER.initSong(song, 1);
 

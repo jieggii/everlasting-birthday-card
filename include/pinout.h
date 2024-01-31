@@ -25,4 +25,7 @@ const uint8_t DIAGNOSTIC_BUTTON_PIN = 8;
 /// I2C address of the 16x2 LCD.
 const uint8_t LCD_ADDRESS = 0x27;
 
+/// Analog pin reading from which will be used as a seed for pseudo-random number generator.
+const uint8_t RANDOM_PIN = A1;
+
 #endif //EVERLASTING_BIRTHDAY_CARD_PINOUT_H

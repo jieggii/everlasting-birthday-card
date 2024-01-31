@@ -17,17 +17,18 @@ void celebrate_setup() {
     // Initialize scrolling of the congratulation text:
     char buffer[CELEBRATE_TEXT_BUFSIZE];
     snprintf_P(buffer, sizeof(buffer), CELEBRATE_TEXT, age);
-    LCD.initScrolling(buffer, 2);
+    LCD.initScrolling(buffer, 255);
 
     ARDUINO_STATE = ArduinoState::CELEBRATE_LOOP;
-
 }
 
 void celebrate_loop() {
     // play song and scroll congratulation text:
     BUZZER.handle();
+
+    // scroll the short congratulation:
     LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
-    Serial.println(LCD.scrolling_text);
+
     if (CANDLE_LED.isPowered()) { // if candle is still turned on
         bool microphone_triggered = MICROPHONE.isTriggered(
                 MICROPHONE_TRIGGER_TRESHOLD, MICROPHONE_TRIGGER_STREAK

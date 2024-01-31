@@ -42,6 +42,16 @@ void setup() {
     CONTROL_BUTTON.initPin(); // diagnostic button pin
     pinMode(WAKE_UP_INTERRUPT_PIN, INPUT_PULLUP); // wake up interrupt pin
 
+    // Reset index of the current wish to a custom value if needed:
+    if (WISH_INDEX_RESET) {
+        EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, WISH_INDEX_RESET_TO);
+
+        LCD.backlight();
+        LCD.displayInfo(F("wish index reset"));
+
+        while (true);
+    }
+
     // Initialize DS3231 RTC module:
     if (!RTC.begin()) {
         FAILURE_LED.turnOn();
@@ -78,13 +88,16 @@ void setup() {
     RTC.disable32K(); // disable 32K pin as it is not needed
     RTC.writeSqwPinMode(DS3231_OFF); // disable square wave generation on SQW pin as it is not needed
 
-    // Reset alarm flags for both alarms:
+    // alarm fired is true if the RTC alarm fired when the Arduino was powered off.
+    const bool alarm_fired = RTC.alarmFired(1);
+
+    // reset alarm flags for both alarms to bring alarm interrupt pin to the default state:
     RTC.clearAlarm(1);
     RTC.clearAlarm(2);
 
     RTC.disableAlarm(2); // disable alarm 2 as only alarm 1 will be used
 
-    // Set an alarm for the birthday date:
+    // set alarm for the birthday in each month:
     if (!RTC.setAlarm1(BIRTH_DATE, DS3231_A1_Date)) {
         FAILURE_LED.turnOn();
 
@@ -97,20 +110,14 @@ void setup() {
     // Attach an alarm interrupt handler:
     attachInterrupt(digitalPinToInterrupt(WAKE_UP_INTERRUPT_PIN), alarm_interrupt_handler, LOW);
 
-    // Reset index of the current wish to a custom value if needed:
-    if (WISH_INDEX_RESET) {
-        EEPROM.write(WISH_INDEX_EEPROM_ADDRESS, WISH_INDEX_RESET_TO);
-
-        LCD.backlight();
-        LCD.displayInfo(F("wish index reset"));
-
-        while (true);
-    }
-
-    if (CONTROL_BUTTON.isPressed()) {
-        ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
+    if (alarm_fired) { // if alarm fired when the board was powered off
+        handle_alarm(false);
     } else {
-        ARDUINO_STATE = ArduinoState::HOME_SETUP;
+        if (CONTROL_BUTTON.isPressed()) {
+            ARDUINO_STATE = ArduinoState::DIAGNOSTIC_SETUP;
+        } else {
+            ARDUINO_STATE = ArduinoState::HOME_SETUP;
+        }
     }
 }
 
@@ -154,7 +161,7 @@ void loop() {
 
             // Handle alarm interrupt state:
         case ArduinoState::HANDLE_ALARM_INTERRUPT:
-            handle_alarm_interrupt();
+            handle_alarm(true); // only ISR changes state to HANDLE_ALARM_INTERRUPT
             break;
 
             // Countdown states:

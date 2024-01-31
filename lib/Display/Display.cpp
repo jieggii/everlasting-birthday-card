@@ -19,7 +19,6 @@ void fulfillRowBuffer(char *buffer) {
     }
     // fulfill buffer with spaces:
     for (uint8_t i = terminator_index; i < LCD_COLS; i++) {
-        Serial.println("set ' ': " + String(i));
         buffer[i] = ' ';
     }
     // add 0-terminator in the end of the buffer

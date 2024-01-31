@@ -11,7 +11,7 @@ void goodbye_setup() {
     char buffer[GOODBYE_TEXT_BUFSIZE];
     strncpy_P(buffer, GOODBYE_TEXT, sizeof(buffer));
 
-    LCD.initScrolling(buffer, 2);
+    LCD.initScrolling(buffer, 1);
 
     ARDUINO_STATE = ArduinoState::GOODBYE_LOOP;
 }
