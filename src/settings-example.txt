@@ -1,0 +1,118 @@
+#include "songs/birthday.h"
+#include "songs/undertale_start_menu.h"
+#include "songs/undertale_your_best_friend.h"
+#include "songs/undertale_once_upon_a_time.h"
+#include "songs/undertale_fallen_down.h"
+#include "songs/undertale_spider_dance.h"
+#include "songs/undertale_tem_shop.h"
+
+#include "settings.h"
+
+/*
+    HOME STATE SETTINGS:
+*/
+/// Random song from this array will be played once in the when entering HOME state.
+const Song *HOME_SONGS[] = {
+        &UNDERTALE_START_MENU_SONG,
+        &UNDERTALE_FALLEN_DOWN_SONG,
+        &UNDERTALE_YOUR_BEST_FRIEND_SONG,
+        &UNDERTALE_SPIDER_DANCE_SONG,
+        &UNDERTALE_TEM_SHOP_SONG
+};
+
+/// Number of songs in the HOME_SONGS array.
+const uint8_t HOME_SONGS_COUNT = sizeof(HOME_SONGS) / sizeof(HOME_SONGS[0]);
+
+/*
+    COUNTDOWN STATE SETTINGS:
+*/
+/// Number of countdown ticks.
+const uint8_t COUNTDOWN_TICKS_COUNT = 5;
+
+/// Tone of the countdown tick.
+const unsigned short COUNTDOWN_TICK_TONE = TONE_G4;
+
+/// Duration of a countdown tick (ms).
+const unsigned short COUNTDOWN_TICK_DURATION = 200;
+
+/// Interval between countdown ticks (ms)
+const unsigned short COUNTDOWN_TICK_INTERVAL = 1000;
+
+/*
+    CELEBRATE STATE SETTINGS:
+*/
+/// Song which will be played in the CELEBRATE state until candle is blown.
+const Song *CELEBRATE_SONG = &BIRTHDAY_SONG;
+
+/// Number of times the birthday song will be repeated until candle is blown.
+const uint8_t CELEBRATE_SONG_REPEAT = 2;
+
+/// Text which will be displayed during celebration. Don't forget to use `%2d` inside,
+/// it will be replaced with the person's new age.
+const char CELEBRATE_TEXT[] PROGMEM = "Wow... <NAME>, you are %2d already! Blow the candle now!!!";
+
+/*
+    MICROPHONE SETTINGS:
+*/
+/// Microphone trigger treshold from 0 to 1023.
+const unsigned short MICROPHONE_TRIGGER_TRESHOLD = 1010;
+
+/// Required streak of treshold readings for microphone to be triggerred.
+const unsigned short MICROPHONE_TRIGGER_STREAK = 5;
+
+/*
+    WISH STATE SETTINGS:
+*/
+/// Song which will be played when wish is being displayed.
+const Song *WISH_SONG = &UNDERTALE_ONCE_UPON_A_TIME_SONG;
+
+/// Number of times WISH_SONG song will be played when wish is being displayed.
+const uint8_t WISH_SONG_REPEAT = 1;
+
+const char WISH_0[] PROGMEM = "WISH 1";
+const char WISH_1[] PROGMEM = "WISH 2";
+const char WISH_2[] PROGMEM = "WISH 3";
+const char WISH_3[] PROGMEM = "WISH 4";
+const char WISH_4[] PROGMEM = "WISH 5";
+const char WISH_5[] PROGMEM = "WISH 6";
+
+/// Array of wishes will be displayed in order year by year.
+const char *const WISHES[] PROGMEM = {WISH_0, WISH_1, WISH_2, WISH_3, WISH_4, WISH_5};
+const uint8_t WISHES_COUNT = sizeof(WISHES) / sizeof(WISHES[0]);
+
+/// Number of times wish will be scrolled.
+const uint8_t WISH_SCROLL_REPEAT = 2;
+/*
+    GOODBYE STATE SETTINGS:
+*/
+const char GOODBYE_TEXT[] PROGMEM = "See you in a year, good luck!!!";
+
+/*
+    DATE OF BIRTH SETTINGS:
+*/
+/// Date of the person's birth (year, month, day, hour, minute, second).
+const BirthDate BIRTH_DATE = BirthDate(2005, 1, 1, 0, 0, 0);
+
+/*
+    LCD SETTINGS:
+*/
+/// Duration of the first frame when scrolling text using LCD (ms):
+const unsigned short LCD_SCROLLING_FIRST_FRAME_DURATION = 650;
+
+/// Duration of frames other than first when scrolling text using LCD (ms):
+const unsigned short LCD_SCROLLING_FRAME_DURATION = 375;
+
+/*
+    OTHER SETTINGS:
+*/
+/// Arduino EEPROM memory address to store the index of a current wish.
+const uint8_t WISH_INDEX_EEPROM_ADDRESS = 0;
+
+/// Index of current wish will be reset to value of `WISH_INDEX_RESET_TO` if WISH_INDEX_RESET is true.
+const bool WISH_INDEX_RESET = false;
+
+/// Stored wish index will be set to this value if `WISH_INDEX_RESET` is true.
+const uint8_t WISH_INDEX_RESET_TO = 0;
+
+/// Reset RTC datetime to compilation datetime.
+const bool RTC_RESET = false;
