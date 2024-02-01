@@ -1,6 +1,7 @@
 # everlasting birthday card
 
-![preview](https://imgur.com/GamAhGR.jpg)
+<img src="https://imgur.com/GamAhGR.jpg" width="300">
+
 Literally everlasting birthday card using Arduino.
 > Work is in progress: prototype is ready, PCBs incoming!
 
