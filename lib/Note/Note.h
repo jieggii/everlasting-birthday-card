@@ -14,6 +14,7 @@ const unsigned short TONE_A3 = 220;
 const unsigned short TONE_Bb3 = 233;
 const unsigned short TONE_B3 = 247;
 const unsigned short TONE_C4 = 262;
+const unsigned short TONE_Db4 = 277;
 const unsigned short TONE_D4 = 294;
 const unsigned short TONE_Eb4 = 311;
 const unsigned short TONE_E4 = 330;
@@ -34,13 +35,13 @@ const unsigned short TONE_Gb5 = 740;
 const unsigned short TONE_G5 = 784;
 const unsigned short TONE_Ab5 = 831;
 const unsigned short TONE_Bb5 = 932;
+const unsigned short TONE_B5 = 988;
 const unsigned short TONE_C6 = 1047;
 const unsigned short TONE_Db6 = 1109;
 const unsigned short TONE_D6 = 1175;
 const unsigned short TONE_Eb6 = 1245;
 const unsigned short TONE_F6 = 1397;
 const unsigned short TONE_Ab6 = 1661;
-
 
 /// Represents note duration.
 enum NoteDuration {
