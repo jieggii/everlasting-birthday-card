@@ -8,10 +8,10 @@ Literally everlasting birthday card using Arduino.
 ## Abstract
 
 Everyone received those cute birthday cards on their birthday, right?
-You read them with shining eyes and smile, then put it to your drawer or box for memories and barely read again.
+You read them with shining eyes and smile, then put it to your drawer or to the box of memories and barely read the text again.
 
 But, what if you would have a cool handcrafted gift card which congratulates you with your birthday every year,
-provides you a candle to blow and also displays a unique birthday wish for this year?
+provides you a candle to blow and also displays an unique birthday wish for this year?
 Well, this is what I have developed.
 I also should mention, that part of the idea is from [here](https://github.com/MakeItHackin/BirthdayCard).
 
