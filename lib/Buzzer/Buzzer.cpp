@@ -135,7 +135,6 @@ void Buzzer::handleSong() {
                this->is_playing) { // if it is time to finish current note
         this->noTone();
         this->is_playing = false;
-//        Serial.println("stop note " + String(this->song_current_note_index));
     }
 }
 

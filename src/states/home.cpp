@@ -53,7 +53,6 @@ void home_loop() {
         } else {
             const DateTime birthday = BIRTH_DATE.nextBirthday(now);
             const TimeSpan time_left = birthday - now;
-
             snprintf(row1, sizeof(row1), "Do DR: %d dnei,", time_left.days());
             snprintf(
                     row2, sizeof(row2), "    %02d:%02d:%02d    ",
