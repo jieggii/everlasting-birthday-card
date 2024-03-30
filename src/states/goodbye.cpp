@@ -17,7 +17,7 @@ void goodbye_setup() {
 }
 
 void goodbye_loop() {
-    LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FIRST_FRAME_DURATION);
+    LCD.handleScrolling(LCD_SCROLLING_FIRST_FRAME_DURATION, LCD_SCROLLING_FRAME_DURATION);
     if (!LCD.isScrolling()) {
         LCD.noBacklight();
         delay(1500);
